@@ -107,3 +107,52 @@ enum Resultado {
     RES_ORDEN_VACIA,
     RES_REPUESTO_EN_USO
 };
+
+bool fechaValida(const char* fecha);                 // YYYY-MM-DD valida
+void fechaActual(char* out11);                       // escribe YYYY-MM-DD
+bool cedulaValida(const char* cedula);               // digitos prefijo V-/E-/J- opcional
+bool placaValida(const char* placa);                 // alfanumerica 6 o 7 caracteres
+bool especialidadValida(const char* esp);
+bool contieneIgnorandoCase(const char* texto const char* sub);
+bool estaBajoStock(const Repuesto* r);               // stock <= stockMinimo
+
+void inicializarSistema(SistemaTaller* s Taller taller);
+void liberarSistema(SistemaTaller* s);
+
+Vehiculo* agregarVehiculo(SistemaTaller* s Vehiculo datos);
+Vehiculo* buscarVehiculoPorID(SistemaTaller* s int id);
+Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s const char* placa);
+Vehiculo** buscarVehiculosPorPropietario(SistemaTaller* s const char* subcadena int* cantidad);
+Vehiculo** listarVehiculos(SistemaTaller* s int* cantidad);
+bool actualizarVehiculo(SistemaTaller* s int id Vehiculo datos);
+bool eliminarVehiculo(SistemaTaller* s int id);
+int contarOrdenesVehiculo(SistemaTaller* s int idVehiculo);
+
+Mecanico* agregarMecanico(SistemaTaller* s Mecanico datos Resultado* res);
+Mecanico* buscarMecanicoPorID(SistemaTaller* s int id);
+Mecanico** listarMecanicos(SistemaTaller* s int* cantidad);
+int contarOrdenesAbiertasMecanico(SistemaTaller* s int idMecanico);
+
+Repuesto* agregarRepuesto(SistemaTaller* s Repuesto datos Resultado* res);
+Repuesto* buscarRepuestoPorID(SistemaTaller* s int id);
+Repuesto* buscarRepuestoPorCodigo(SistemaTaller* s const char* codigo);
+Repuesto** buscarRepuestosPorTexto(SistemaTaller* s const char* subcadena int* cantidad);
+Repuesto** listarRepuestos(SistemaTaller* s int* cantidad);
+Resultado registrarEntradaMercancia(SistemaTaller* s int idRepuesto int cantidad);
+Resultado cambiarPrecioRepuesto(SistemaTaller* s int idRepuesto float nuevoPrecio);
+bool repuestoEnUso(SistemaTaller* s int idRepuesto);
+Resultado eliminarRepuesto(SistemaTaller* s int idRepuesto);
+
+OrdenServicio* abrirOrden(SistemaTaller* s int idVehiculo int idMecanico
+                          int kilometraje const char* descripcionFalla Resultado* res);
+OrdenServicio* buscarOrdenPorID(SistemaTaller* s int id);
+OrdenServicio* buscarOrdenAbiertaDeVehiculo(SistemaTaller* s int idVehiculo);
+Resultado agregarRepuestoAOrden(SistemaTaller* s int idOrden int idRepuesto int cantidad);
+Resultado quitarRepuestoDeOrden(SistemaTaller* s int idOrden int idRepuesto);
+Resultado cerrarOrden(SistemaTaller* s int idOrden float manoObra);
+Resultado anularOrden(SistemaTaller* s int idOrden);
+float calcularSubtotalRepuestos(const OrdenServicio* o);
+float calcularTotalOrden(const OrdenServicio* o);
+OrdenServicio** listarOrdenes(SistemaTaller* s int* cantidad);
+OrdenServicio** listarOrdenesPorEstado(SistemaTaller* s const char* estado int* cantidad);
+OrdenServicio** listarOrdenesPorVehiculo(SistemaTaller* s int idVehiculo int* cantidad);
