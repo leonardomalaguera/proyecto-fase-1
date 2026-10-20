@@ -156,3 +156,49 @@ float calcularTotalOrden(const OrdenServicio* o);
 OrdenServicio** listarOrdenes(SistemaTaller* s int* cantidad);
 OrdenServicio** listarOrdenesPorEstado(SistemaTaller* s const char* estado int* cantidad);
 OrdenServicio** listarOrdenesPorVehiculo(SistemaTaller* s int idVehiculo int* cantidad);
+
+bool entradaTerminada();
+
+// Menus
+void menuPrincipal(SistemaTaller* s);
+void menuVehiculos(SistemaTaller* s);
+void menuMecanicos(SistemaTaller* s);
+void menuInventario(SistemaTaller* s);
+void menuOrdenes(SistemaTaller* s);
+
+// Vehiculos
+void menuRegistrarVehiculo(SistemaTaller* s);
+void menuBuscarVehiculo(SistemaTaller* s);
+void menuActualizarVehiculo(SistemaTaller* s);
+void menuEliminarVehiculo(SistemaTaller* s);
+void menuListarVehiculos(SistemaTaller* s);
+void mostrarVehiculo(Vehiculo* vehiculo);
+void mostrarListaVehiculos(Vehiculo** vehiculos, int cantidad);
+
+// Mecanicos
+void menuRegistrarMecanico(SistemaTaller* s);
+void menuBuscarMecanico(SistemaTaller* s);
+void menuListarMecanicos(SistemaTaller* s);
+void mostrarMecanico(Mecanico* mecanico, SistemaTaller* s);
+void mostrarListaMecanicos(Mecanico** mecanicos, int cantidad, SistemaTaller* s);
+
+// Repuestos
+void menuRegistrarRepuesto(SistemaTaller* s);
+void menuBuscarRepuesto(SistemaTaller* s);
+void menuEntradaMercancia(SistemaTaller* s);
+void menuCambiarPrecio(SistemaTaller* s);
+void menuEliminarRepuesto(SistemaTaller* s);
+void menuListarRepuestos(SistemaTaller* s);
+void mostrarRepuesto(Repuesto* repuesto);
+void mostrarListaRepuestos(Repuesto** repuestos, int cantidad);
+
+// ordenes
+void menuAbrirOrden(SistemaTaller* s);
+void menuAgregarRepuestoOrden(SistemaTaller* s);
+void menuQuitarRepuestoOrden(SistemaTaller* s);
+void menuCerrarOrden(SistemaTaller* s);
+void menuAnularOrden(SistemaTaller* s);
+void menuVerDetalleOrden(SistemaTaller* s);
+void menuListarOrdenes(SistemaTaller* s);
+void mostrarOrden(OrdenServicio* orden, SistemaTaller* s);
+void mostrarListaOrdenes(OrdenServicio** ordenes, int cantidad, SistemaTaller* s);
