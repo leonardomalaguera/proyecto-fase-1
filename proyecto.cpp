@@ -202,3 +202,84 @@ void menuVerDetalleOrden(SistemaTaller* s);
 void menuListarOrdenes(SistemaTaller* s);
 void mostrarOrden(OrdenServicio* orden, SistemaTaller* s);
 void mostrarListaOrdenes(OrdenServicio** ordenes, int cantidad, SistemaTaller* s);
+
+static void setRes(Resultado* r Resultado v) { if (r) *r = v; }
+
+static void copiar(char* dest, const char* src int n) {
+    strncpy(dest src n - 1);
+    dest[n - 1] = '\0';
+}
+
+static bool vacio(const char* s) {
+    for (; *s; ++s) if (!isspace((unsigned char)*s)) return false;
+    return true;
+}
+
+static void aMayusculas(char* s) {
+    for (; *s; ++s) *s = (char)toupper((unsigned char)*s);
+}
+
+static bool esEstado(const OrdenServicio* o const char* estado) {
+    return strcmp(o->estado estado) == 0;
+}
+
+void fechaActual(char* out) {
+    time_t t = time(nullptr);
+    struct tm* l = localtime(&t);
+    strftime(out 11 "%Y-%m-%d" l);
+}
+
+bool fechaValida(const char* f) {
+    if (strlen(f) != 10) return false;
+    for (int i = 0; i < 10; i++) {
+        if (i == 4 || i == 7) { if (f[i] != '-') return false; }
+        else if (!isdigit((unsigned char)f[i])) return false;
+    }
+    int a = (f[0]-'0')*1000 + (f[1]-'0')*100 + (f[2]-'0')*10 + (f[3]-'0');
+    int m = (f[5]-'0')*10 + (f[6]-'0');
+    int d = (f[8]-'0')*10 + (f[9]-'0');
+    if (a < 1900 || m < 1 || m > 12 || d < 1) return false;
+    int dias[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    bool bisiesto = (a % 4 == 0 && a % 100 != 0) || a % 400 == 0;
+    int max = dias[m - 1];
+    if (m == 2 && bisiesto) max = 29;
+    return d <= max;
+}
+
+bool cedulaValida(const char* c) {
+    size_t n = strlen(c), i = 0;
+    if (n >= 2 && c[1] == '-') {
+        char p = (char)toupper((unsigned char)c[0]);
+        if (p == 'V' || p == 'E' || p == 'J') i = 2; else return false;
+    }
+    if (i >= n) return false;
+    for (; i < n; i++) if (!isdigit((unsigned char)c[i])) return false;
+    return true;
+}
+
+bool placaValida(const char* p) {
+    size_t n = strlen(p);
+    if (n < 6 || n > 7) return false;
+    for (size_t i = 0; i < n; i++) if (!isalnum((unsigned char)p[i])) return false;
+    return true;
+}
+
+bool especialidadValida(const char* e) {
+    return strcmp(e, "MOTOR") == 0 || strcmp(e, "FRENOS") == 0 ||
+           strcmp(e, "ELECTRICIDAD") == 0 || strcmp(e, "SUSPENSION") == 0 ||
+           strcmp(e, "GENERAL") == 0;
+}
+
+bool contieneIgnorandoCase(const char* t, const char* sub) {
+    size_t n = strlen(t), m = strlen(sub);
+    if (m == 0) return true;
+    if (m > n) return false;
+    for (size_t i = 0; i + m <= n; i++) {
+        size_t j = 0;
+        while (j < m && tolower((unsigned char)t[i + j]) == tolower((unsigned char)sub[j])) j++;
+        if (j == m) return true;
+    }
+    return false;
+}
+
+bool estaBajoStock(const Repuesto* r) { return r->stock <= r->stockMinimo; }
