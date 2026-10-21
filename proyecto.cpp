@@ -641,3 +641,284 @@ static int indiceDetalle(const OrdenServicio* o, int idRepuesto) {
         if (o->detalles[i].idRepuesto == idRepuesto) return i;
     return -1;
 }
+
+Resultado agregarRepuestoAOrden(SistemaTaller* s, int idOrden, int idRepuesto, int cantidad) {
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (!o) return RES_ORDEN_NO_EXISTE;
+    if (!esEstado(o, "ABIERTA")) return RES_ESTADO_INVALIDO;
+    Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
+    if (!r) return RES_REPUESTO_NO_EXISTE;
+    if (cantidad <= 0) return RES_DATO_INVALIDO;
+    if (r->stock < cantidad) return RES_STOCK_INSUFICIENTE;
+
+    int idx = indiceDetalle(o, idRepuesto);
+    if (idx >= 0) {
+        o->detalles[idx].cantidad += cantidad;   // acumula en la linea existente
+    } else {
+        crecerDetalles(o);
+        DetalleOrden d;
+        d.idRepuesto = idRepuesto;
+        d.cantidad = cantidad;
+        d.precioUnitario = r->precio;            // precio histórico congelado
+        o->detalles[o->numDetalles++] = d;
+    }
+    r->stock -= cantidad;
+    return RES_OK;
+}
+
+Resultado quitarRepuestoDeOrden(SistemaTaller* s, int idOrden, int idRepuesto) {
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (!o) return RES_ORDEN_NO_EXISTE;
+    if (!esEstado(o, "ABIERTA")) return RES_ESTADO_INVALIDO;
+    int idx = indiceDetalle(o, idRepuesto);
+    if (idx < 0) return RES_REPUESTO_NO_EN_ORDEN;
+    Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
+    if (r) r->stock += o->detalles[idx].cantidad;   // devuelve al inventario
+    for (int i = idx; i < o->numDetalles - 1; i++) o->detalles[i] = o->detalles[i + 1];
+    o->numDetalles--;
+    return RES_OK;
+}
+
+Resultado cerrarOrden(SistemaTaller* s, int idOrden, float manoObra) {
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (!o) return RES_ORDEN_NO_EXISTE;
+    if (!esEstado(o, "ABIERTA")) return RES_ESTADO_INVALIDO;
+    if (manoObra < 0) return RES_DATO_INVALIDO;
+    if (o->numDetalles == 0 && manoObra <= 0) return RES_ORDEN_VACIA;
+    o->manoObra = manoObra;
+    copiar(o->estado, "CERRADA", sizeof o->estado);
+    fechaActual(o->fechaCierre);
+    return RES_OK;
+}
+
+Resultado anularOrden(SistemaTaller* s, int idOrden) {
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (!o) return RES_ORDEN_NO_EXISTE;
+    if (!esEstado(o, "ABIERTA") && !esEstado(o, "CERRADA")) return RES_ESTADO_INVALIDO;
+    for (int i = 0; i < o->numDetalles; i++) {
+        Repuesto* r = buscarRepuestoPorID(s, o->detalles[i].idRepuesto);
+        if (r) r->stock += o->detalles[i].cantidad;
+    }
+    copiar(o->estado, "ANULADA", sizeof o->estado);
+    return RES_OK;
+}
+
+float calcularSubtotalRepuestos(const OrdenServicio* o) {
+    float t = 0;
+    for (int i = 0; i < o->numDetalles; i++)
+        t += o->detalles[i].cantidad * o->detalles[i].precioUnitario;
+    return t;
+}
+
+float calcularTotalOrden(const OrdenServicio* o) {
+    return o->manoObra + calcularSubtotalRepuestos(o);
+}
+
+OrdenServicio** listarOrdenes(SistemaTaller* s, int* cantidad) {
+    *cantidad = s->numOrdenes;
+    if (s->numOrdenes == 0) return nullptr;
+    OrdenServicio** r = new OrdenServicio*[s->numOrdenes];
+    for (int i = 0; i < s->numOrdenes; i++) r[i] = &s->ordenes[i];
+    return r;
+}
+
+OrdenServicio** listarOrdenesPorEstado(SistemaTaller* s, const char* estado, int* cantidad) {
+    int n = 0;
+    for (int i = 0; i < s->numOrdenes; i++) if (esEstado(&s->ordenes[i], estado)) n++;
+    *cantidad = n;
+    if (n == 0) return nullptr;
+    OrdenServicio** r = new OrdenServicio*[n];
+    int k = 0;
+    for (int i = 0; i < s->numOrdenes; i++) if (esEstado(&s->ordenes[i], estado)) r[k++] = &s->ordenes[i];
+    return r;
+}
+
+OrdenServicio** listarOrdenesPorVehiculo(SistemaTaller* s, int idVehiculo, int* cantidad) {
+    int n = contarOrdenesVehiculo(s, idVehiculo);
+    *cantidad = n;
+    if (n == 0) return nullptr;
+    OrdenServicio** r = new OrdenServicio*[n];
+    int k = 0;
+    for (int i = 0; i < s->numOrdenes; i++) if (s->ordenes[i].idVehiculo == idVehiculo) r[k++] = &s->ordenes[i];
+    return r;
+}
+
+//capa de presentacion
+using namespace std;
+
+static bool gEOF = false;
+static bool gEco = !ES_TTY();   
+
+bool entradaTerminada() { return gEOF; }
+
+//lectura de entrada
+static void mayusculas(string& s) {
+    for (size_t i = 0; i < s.size(); i++) s[i] = (char)toupper((unsigned char)s[i]);
+}
+
+static void recortar(string& s) {
+    size_t a = 0, b = s.size();
+    while (a < b && isspace((unsigned char)s[a])) a++;
+    while (b > a && isspace((unsigned char)s[b - 1])) b--;
+    s = s.substr(a, b - a);
+}
+
+static bool igualCI(const string& a, const char* b) {
+    if (a.size() != strlen(b)) return false;
+    for (size_t i = 0; i < a.size(); i++)
+        if (toupper((unsigned char)a[i]) != toupper((unsigned char)b[i])) return false;
+    return true;
+}
+
+//devuelve false si el usuario escribe cancelar o si se acabo la entrada.
+static bool leerLinea(const char* prompt, string& out) {
+    cout << prompt << flush;
+    if (!getline(cin, out)) {
+        gEOF = true;
+        cout << "\n";
+        return false;
+    }
+    recortar(out);
+    if (gEco) cout << out << "\n";
+    if (igualCI(out, "CANCELAR")) {
+        cout << "Operación cancelada. No se realizó ningún cambio.\n";
+        return false;
+    }
+    return true;
+}
+
+static bool leerTexto(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        if (t.empty()) { cout << "ERROR: Este campo no puede estar vacío.\n"; continue; }
+        if ((int)t.size() >= max) {
+            cout << "ERROR: Texto demasiado largo (máximo " << max - 1 << " caracteres).\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerEntero(const char* prompt, int* out, long minV, long maxV) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        char* fin = nullptr;
+        long v = strtol(t.c_str(), &fin, 10);
+        if (t.empty() || *fin != '\0') {
+            cout << "ERROR: '" << t << "' no es un número entero válido.\n";
+            continue;
+        }
+        if (v < minV || v > maxV) {
+            if (maxV >= INT_MAX) cout << "ERROR: El valor debe ser mayor o igual a " << minV << ".\n";
+            else cout << "ERROR: El valor debe estar entre " << minV << " y " << maxV << ".\n";
+            continue;
+        }
+        *out = (int)v;
+        return true;
+    }
+}
+
+static bool leerFloat(const char* prompt, float* out, double minV, bool estricto) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        for (size_t i = 0; i < t.size(); i++) if (t[i] == ',') t[i] = '.';
+        char* fin = nullptr;
+        double v = strtod(t.c_str(), &fin);
+        if (t.empty() || *fin != '\0') {
+            cout << "ERROR: '" << t << "' no es un número válido.\n";
+            continue;
+        }
+        if (estricto ? !(v > minV) : !(v >= minV)) {
+            cout << "ERROR: El valor debe ser " << (estricto ? "mayor que " : "mayor o igual a ") << minV << ".\n";
+            continue;
+        }
+        *out = (float)v;
+        return true;
+    }
+}
+
+static bool leerSN(const char* prompt, bool* resp) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (t == "S") { *resp = true; return true; }
+        if (t == "N") { *resp = false; return true; }
+        cout << "ERROR: Responda S o N.\n";
+    }
+}
+
+static bool leerCedula(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (!cedulaValida(t.c_str()) || (int)t.size() >= max) {
+            cout << "ERROR: Cédula inválida. Use solo dígitos (se admite prefijo V-, E- o J-).\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerPlaca(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (!placaValida(t.c_str()) || (int)t.size() >= max) {
+            cout << "ERROR: Placa inválida. Debe ser alfanumérica de 6 o 7 caracteres.\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerFecha(const char* prompt, char* dest) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        if (!fechaValida(t.c_str())) {
+            cout << "ERROR: Fecha inválida. Use el formato YYYY-MM-DD con valores reales.\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerEspecialidad(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (!especialidadValida(t.c_str()) || (int)t.size() >= max) {
+            cout << "ERROR: Especialidad inválida. Valores permitidos: MOTOR, FRENOS, ELECTRICIDAD, SUSPENSION, GENERAL.\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerCodigo(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (t.empty()) { cout << "ERROR: Este campo no puede estar vacío.\n"; continue; }
+        if ((int)t.size() >= max) { cout << "ERROR: Código demasiado largo.\n"; continue; }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerOpcion(int* op, int maxOp) {
+    return leerEntero("Seleccione una opción: ", op, 0, maxOp);
+}
