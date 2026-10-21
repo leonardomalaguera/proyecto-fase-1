@@ -452,3 +452,192 @@ bool eliminarVehiculo(SistemaTaller* s, int id) {
     s->numVehiculos--;
     return true;
 }
+
+Mecanico* agregarMecanico(SistemaTaller* s, Mecanico datos, Resultado* res) {
+    aMayusculas(datos.cedula);
+    aMayusculas(datos.especialidad);
+    if (vacio(datos.nombre) || !cedulaValida(datos.cedula) ||
+        !especialidadValida(datos.especialidad) || !fechaValida(datos.fechaIngreso)) {
+        setRes(res, RES_DATO_INVALIDO);
+        return nullptr;
+    }
+    for (int i = 0; i < s->numMecanicos; i++)
+        if (strcmp(s->mecanicos[i].cedula, datos.cedula) == 0) {
+            setRes(res, RES_DUPLICADO);
+            return nullptr;
+        }
+    crecerMecanicos(s);
+    datos.id = s->siguienteIdMecanico++;
+    s->mecanicos[s->numMecanicos] = datos;
+    s->numMecanicos++;
+    setRes(res, RES_OK);
+    return &s->mecanicos[s->numMecanicos - 1];
+}
+
+Mecanico* buscarMecanicoPorID(SistemaTaller* s, int id) {
+    for (int i = 0; i < s->numMecanicos; i++)
+        if (s->mecanicos[i].id == id) return &s->mecanicos[i];
+    return nullptr;
+}
+
+Mecanico** listarMecanicos(SistemaTaller* s, int* cantidad) {
+    *cantidad = s->numMecanicos;
+    if (s->numMecanicos == 0) return nullptr;
+    Mecanico** r = new Mecanico*[s->numMecanicos];
+    for (int i = 0; i < s->numMecanicos; i++) r[i] = &s->mecanicos[i];
+    return r;
+}
+
+int contarOrdenesAbiertasMecanico(SistemaTaller* s, int idMecanico) {
+    int n = 0;
+    for (int i = 0; i < s->numOrdenes; i++)
+        if (s->ordenes[i].idMecanico == idMecanico && esEstado(&s->ordenes[i], "ABIERTA")) n++;
+    return n;
+}
+
+Repuesto* agregarRepuesto(SistemaTaller* s, Repuesto datos, Resultado* res) {
+    aMayusculas(datos.codigo);
+    if (vacio(datos.codigo) || vacio(datos.nombre) || vacio(datos.marca) ||
+        datos.precio <= 0 || datos.stock < 0 || datos.stockMinimo < 0) {
+        setRes(res, RES_DATO_INVALIDO);
+        return nullptr;
+    }
+    if (buscarRepuestoPorCodigo(s, datos.codigo) != nullptr) {
+        setRes(res, RES_DUPLICADO);
+        return nullptr;
+    }
+    crecerRepuestos(s);
+    datos.id = s->siguienteIdRepuesto++;
+    fechaActual(datos.fechaRegistro);
+    s->repuestos[s->numRepuestos] = datos;
+    s->numRepuestos++;
+    setRes(res, RES_OK);
+    return &s->repuestos[s->numRepuestos - 1];
+}
+
+Repuesto* buscarRepuestoPorID(SistemaTaller* s, int id) {
+    for (int i = 0; i < s->numRepuestos; i++)
+        if (s->repuestos[i].id == id) return &s->repuestos[i];
+    return nullptr;
+}
+
+Repuesto* buscarRepuestoPorCodigo(SistemaTaller* s, const char* codigo) {
+    for (int i = 0; i < s->numRepuestos; i++)
+        if (strcmp(s->repuestos[i].codigo, codigo) == 0) return &s->repuestos[i];
+    return nullptr;
+}
+
+Repuesto** buscarRepuestosPorTexto(SistemaTaller* s, const char* sub, int* cantidad) {
+    int n = 0;
+    for (int i = 0; i < s->numRepuestos; i++)
+        if (contieneIgnorandoCase(s->repuestos[i].codigo, sub) ||
+            contieneIgnorandoCase(s->repuestos[i].nombre, sub)) n++;
+    *cantidad = n;
+    if (n == 0) return nullptr;
+    Repuesto** r = new Repuesto*[n];
+    int k = 0;
+    for (int i = 0; i < s->numRepuestos; i++)
+        if (contieneIgnorandoCase(s->repuestos[i].codigo, sub) ||
+            contieneIgnorandoCase(s->repuestos[i].nombre, sub)) r[k++] = &s->repuestos[i];
+    return r;
+}
+
+Repuesto** listarRepuestos(SistemaTaller* s, int* cantidad) {
+    *cantidad = s->numRepuestos;
+    if (s->numRepuestos == 0) return nullptr;
+    Repuesto** r = new Repuesto*[s->numRepuestos];
+    for (int i = 0; i < s->numRepuestos; i++) r[i] = &s->repuestos[i];
+    return r;
+}
+
+Resultado registrarEntradaMercancia(SistemaTaller* s, int idRepuesto, int cantidad) {
+    Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
+    if (!r) return RES_REPUESTO_NO_EXISTE;
+    if (cantidad <= 0) return RES_DATO_INVALIDO;
+    r->stock += cantidad;
+    return RES_OK;
+}
+
+Resultado cambiarPrecioRepuesto(SistemaTaller* s, int idRepuesto, float nuevoPrecio) {
+    Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
+    if (!r) return RES_REPUESTO_NO_EXISTE;
+    if (nuevoPrecio <= 0) return RES_DATO_INVALIDO;
+    r->precio = nuevoPrecio;   // las órdenes conservan su propio precioUnitario
+    return RES_OK;
+}
+
+bool repuestoEnUso(SistemaTaller* s, int idRepuesto) {
+    for (int i = 0; i < s->numOrdenes; i++)
+        for (int j = 0; j < s->ordenes[i].numDetalles; j++)
+            if (s->ordenes[i].detalles[j].idRepuesto == idRepuesto) return true;
+    return false;
+}
+
+Resultado eliminarRepuesto(SistemaTaller* s, int idRepuesto) {
+    int idx = -1;
+    for (int i = 0; i < s->numRepuestos; i++)
+        if (s->repuestos[i].id == idRepuesto) { idx = i; break; }
+    if (idx < 0) return RES_REPUESTO_NO_EXISTE;
+    if (repuestoEnUso(s, idRepuesto)) return RES_REPUESTO_EN_USO;
+    for (int i = idx; i < s->numRepuestos - 1; i++) s->repuestos[i] = s->repuestos[i + 1];
+    s->numRepuestos--;
+    return RES_OK;
+}
+
+OrdenServicio* abrirOrden(SistemaTaller* s, int idVehiculo, int idMecanico,
+                          int kilometraje, const char* descripcionFalla, Resultado* res) {
+    Vehiculo* v = buscarVehiculoPorID(s, idVehiculo);
+    if (!v) { setRes(res, RES_VEHICULO_NO_EXISTE); return nullptr; }
+    Mecanico* m = buscarMecanicoPorID(s, idMecanico);
+    if (!m) { setRes(res, RES_MECANICO_NO_EXISTE); return nullptr; }
+    if (kilometraje < 0 || vacio(descripcionFalla) || strlen(descripcionFalla) >= 200) {
+        setRes(res, RES_DATO_INVALIDO); return nullptr;
+    }
+    if (buscarOrdenAbiertaDeVehiculo(s, idVehiculo) != nullptr) {
+        setRes(res, RES_VEHICULO_CON_ORDEN_ABIERTA); return nullptr;
+    }
+    if (contarOrdenesAbiertasMecanico(s, idMecanico) >= 3) {
+        setRes(res, RES_MECANICO_SATURADO); return nullptr;
+    }
+    if (kilometraje < v->kilometraje) { setRes(res, RES_KM_MENOR); return nullptr; }
+
+    crecerOrdenes(s);   // puede invalidar punteros a ordenes; 'v' es de otro arreglo y sigue valido
+    OrdenServicio nueva = OrdenServicio();
+    nueva.id = s->siguienteIdOrden++;
+    nueva.idVehiculo = idVehiculo;
+    nueva.idMecanico = idMecanico;
+    fechaActual(nueva.fechaApertura);
+    nueva.fechaCierre[0] = '\0';
+    copiar(nueva.estado, "ABIERTA", sizeof nueva.estado);
+    copiar(nueva.descripcionFalla, descripcionFalla, sizeof nueva.descripcionFalla);
+    nueva.kilometrajeIngreso = kilometraje;
+    nueva.manoObra = 0;
+    nueva.capacidadDetalles = 2;
+    nueva.numDetalles = 0;
+    nueva.detalles = new DetalleOrden[2]();
+
+    s->ordenes[s->numOrdenes] = nueva;
+    s->numOrdenes++;
+    v->kilometraje = kilometraje;
+    setRes(res, RES_OK);
+    return &s->ordenes[s->numOrdenes - 1];
+}
+
+OrdenServicio* buscarOrdenPorID(SistemaTaller* s, int id) {
+    for (int i = 0; i < s->numOrdenes; i++)
+        if (s->ordenes[i].id == id) return &s->ordenes[i];
+    return nullptr;
+}
+
+OrdenServicio* buscarOrdenAbiertaDeVehiculo(SistemaTaller* s, int idVehiculo) {
+    for (int i = 0; i < s->numOrdenes; i++)
+        if (s->ordenes[i].idVehiculo == idVehiculo && esEstado(&s->ordenes[i], "ABIERTA"))
+            return &s->ordenes[i];
+    return nullptr;
+}
+
+static int indiceDetalle(const OrdenServicio* o, int idRepuesto) {
+    for (int i = 0; i < o->numDetalles; i++)
+        if (o->detalles[i].idRepuesto == idRepuesto) return i;
+    return -1;
+}
