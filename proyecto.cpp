@@ -283,3 +283,172 @@ bool contieneIgnorandoCase(const char* t, const char* sub) {
 }
 
 bool estaBajoStock(const Repuesto* r) { return r->stock <= r->stockMinimo; }
+
+// redimensionamiento 
+// cuando num == capacidad se reserva un arreglo del doble se copia y se libera el viejo.
+static void crecerVehiculos(SistemaTaller* s) {
+    if (s->numVehiculos < s->capacidadVehiculos) return;
+    int nueva = s->capacidadVehiculos * 2;
+    Vehiculo* nuevo = new Vehiculo[nueva]();
+    for (int i = 0; i < s->numVehiculos; i++) nuevo[i] = s->vehiculos[i];
+    delete[] s->vehiculos;
+    s->vehiculos = nuevo;
+    s->capacidadVehiculos = nueva;
+}
+
+static void crecerMecanicos(SistemaTaller* s) {
+    if (s->numMecanicos < s->capacidadMecanicos) return;
+    int nueva = s->capacidadMecanicos * 2;
+    Mecanico* nuevo = new Mecanico[nueva]();
+    for (int i = 0; i < s->numMecanicos; i++) nuevo[i] = s->mecanicos[i];
+    delete[] s->mecanicos;
+    s->mecanicos = nuevo;
+    s->capacidadMecanicos = nueva;
+}
+
+static void crecerRepuestos(SistemaTaller* s) {
+    if (s->numRepuestos < s->capacidadRepuestos) return;
+    int nueva = s->capacidadRepuestos * 2;
+    Repuesto* nuevo = new Repuesto[nueva]();
+    for (int i = 0; i < s->numRepuestos; i++) nuevo[i] = s->repuestos[i];
+    delete[] s->repuestos;
+    s->repuestos = nuevo;
+    s->capacidadRepuestos = nueva;
+}
+
+static void crecerOrdenes(SistemaTaller* s) {
+    if (s->numOrdenes < s->capacidadOrdenes) return;
+    int nueva = s->capacidadOrdenes * 2;
+    OrdenServicio* nuevo = new OrdenServicio[nueva]();
+    // Copia superficial cada orden traslada su puntero detalles al nuevo arreglo.
+    // El arreglo de detalles no se copia ni se pierde solo cambia de dueño.
+    // delete[] del arreglo viejo no libera los detalles porque OrdenServicio no tiene destructor.
+    for (int i = 0; i < s->numOrdenes; i++) nuevo[i] = s->ordenes[i];
+    delete[] s->ordenes;
+    s->ordenes = nuevo;
+    s->capacidadOrdenes = nueva;
+}
+
+static void crecerDetalles(OrdenServicio* o) {
+    if (o->numDetalles < o->capacidadDetalles) return;
+    int nueva = o->capacidadDetalles * 2;
+    DetalleOrden* nuevo = new DetalleOrden[nueva]();
+    for (int i = 0; i < o->numDetalles; i++) nuevo[i] = o->detalles[i];
+    delete[] o->detalles;
+    o->detalles = nuevo;
+    o->capacidadDetalles = nueva;
+}
+
+//sistema 
+void inicializarSistema(SistemaTaller* s, Taller taller) {
+    s->taller = taller;
+    s->capacidadVehiculos = 4; s->numVehiculos = 0; s->vehiculos = new Vehiculo[4]();
+    s->capacidadMecanicos = 4; s->numMecanicos = 0; s->mecanicos = new Mecanico[4]();
+    s->capacidadRepuestos = 4; s->numRepuestos = 0; s->repuestos = new Repuesto[4]();
+    s->capacidadOrdenes   = 4; s->numOrdenes   = 0; s->ordenes   = new OrdenServicio[4]();
+    s->siguienteIdVehiculo = 1;
+    s->siguienteIdMecanico = 1;
+    s->siguienteIdRepuesto = 1;
+    s->siguienteIdOrden = 1;
+}
+
+void liberarSistema(SistemaTaller* s) {
+    // Primero la memoria anidada el arreglo de detalles de cada orden
+    for (int i = 0; i < s->numOrdenes; i++) {
+        delete[] s->ordenes[i].detalles;
+        s->ordenes[i].detalles = nullptr;
+    }
+    delete[] s->ordenes;   s->ordenes = nullptr;
+    delete[] s->repuestos; s->repuestos = nullptr;
+    delete[] s->mecanicos; s->mecanicos = nullptr;
+    delete[] s->vehiculos; s->vehiculos = nullptr;
+    s->numVehiculos = s->numMecanicos = s->numRepuestos = s->numOrdenes = 0;
+    s->capacidadVehiculos = s->capacidadMecanicos = s->capacidadRepuestos = s->capacidadOrdenes = 0;
+}
+
+//vehiculos 
+static bool propietarioYModeloValidos(const Vehiculo& v) {
+    if (vacio(v.marca) || vacio(v.modelo) || vacio(v.nombrePropietario) || vacio(v.telefonoPropietario)) return false;
+    if (v.anio < 1950 || v.anio > 2027) return false;
+    if (!cedulaValida(v.cedulaPropietario)) return false;
+    return true;
+}
+
+Vehiculo* agregarVehiculo(SistemaTaller* s, Vehiculo datos) {
+    aMayusculas(datos.placa);
+    if (!placaValida(datos.placa)) return nullptr;
+    if (buscarVehiculoPorPlaca(s, datos.placa) != nullptr) return nullptr;
+    if (!propietarioYModeloValidos(datos)) return nullptr;
+    if (datos.kilometraje < 0) return nullptr;
+
+    crecerVehiculos(s);
+    datos.id = s->siguienteIdVehiculo++;
+    fechaActual(datos.fechaRegistro);
+    s->vehiculos[s->numVehiculos] = datos;
+    s->numVehiculos++;
+    return &s->vehiculos[s->numVehiculos - 1];
+}
+
+Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id) {
+    for (int i = 0; i < s->numVehiculos; i++)
+        if (s->vehiculos[i].id == id) return &s->vehiculos[i];
+    return nullptr;
+}
+
+Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa) {
+    for (int i = 0; i < s->numVehiculos; i++)
+        if (strcmp(s->vehiculos[i].placa, placa) == 0) return &s->vehiculos[i];
+    return nullptr;
+}
+
+Vehiculo** buscarVehiculosPorPropietario(SistemaTaller* s, const char* sub, int* cantidad) {
+    int n = 0;
+    for (int i = 0; i < s->numVehiculos; i++)
+        if (contieneIgnorandoCase(s->vehiculos[i].nombrePropietario, sub)) n++;
+    *cantidad = n;
+    if (n == 0) return nullptr;
+    Vehiculo** r = new Vehiculo*[n];
+    int k = 0;
+    for (int i = 0; i < s->numVehiculos; i++)
+        if (contieneIgnorandoCase(s->vehiculos[i].nombrePropietario, sub)) r[k++] = &s->vehiculos[i];
+    return r;
+}
+
+Vehiculo** listarVehiculos(SistemaTaller* s, int* cantidad) {
+    *cantidad = s->numVehiculos;
+    if (s->numVehiculos == 0) return nullptr;
+    Vehiculo** r = new Vehiculo*[s->numVehiculos];
+    for (int i = 0; i < s->numVehiculos; i++) r[i] = &s->vehiculos[i];
+    return r;
+}
+
+bool actualizarVehiculo(SistemaTaller* s, int id, Vehiculo datos) {
+    Vehiculo* v = buscarVehiculoPorID(s, id);
+    if (!v) return false;
+    if (!propietarioYModeloValidos(datos)) return false;
+    copiar(v->marca, datos.marca, sizeof v->marca);
+    copiar(v->modelo, datos.modelo, sizeof v->modelo);
+    v->anio = datos.anio;
+    copiar(v->nombrePropietario, datos.nombrePropietario, sizeof v->nombrePropietario);
+    copiar(v->cedulaPropietario, datos.cedulaPropietario, sizeof v->cedulaPropietario);
+    copiar(v->telefonoPropietario, datos.telefonoPropietario, sizeof v->telefonoPropietario);
+    return true;
+}
+
+int contarOrdenesVehiculo(SistemaTaller* s, int idVehiculo) {
+    int n = 0;
+    for (int i = 0; i < s->numOrdenes; i++)
+        if (s->ordenes[i].idVehiculo == idVehiculo) n++;
+    return n;
+}
+
+bool eliminarVehiculo(SistemaTaller* s, int id) {
+    int idx = -1;
+    for (int i = 0; i < s->numVehiculos; i++)
+        if (s->vehiculos[i].id == id) { idx = i; break; }
+    if (idx < 0) return false;
+    if (contarOrdenesVehiculo(s, id) > 0) return false;
+    for (int i = idx; i < s->numVehiculos - 1; i++) s->vehiculos[i] = s->vehiculos[i + 1];
+    s->numVehiculos--;
+    return true;
+}
