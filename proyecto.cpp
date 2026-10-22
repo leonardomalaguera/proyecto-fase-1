@@ -1582,3 +1582,137 @@ void menuQuitarRepuestoOrden(SistemaTaller* s) {
                             << ". Stock actual: " << r->stock << ".\n";
     else mostrarError(res, s, idOrden, 0, 0, idRep, 0, 0);
 }
+
+void menuCerrarOrden(SistemaTaller* s) {
+    cout << "\n--- CERRAR ORDEN (escriba CANCELAR para abortar) ---\n";
+    int idOrden;
+    if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (!o) { mostrarError(RES_ORDEN_NO_EXISTE, s, idOrden, 0, 0, 0, 0, 0); return; }
+    float mano;
+    if (!leerFloat("Mano de obra (>= 0): ", &mano, 0, false)) return;
+    bool ok;
+    if (!leerSN("¿Confirmar el cierre de la orden? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Cierre descartado.\n"; return; }
+    Resultado res = cerrarOrden(s, idOrden, mano);
+    if (res == RES_OK) {
+        cout << fixed;
+        cout.precision(2);
+        cout << "Orden #" << idOrden << " cerrada. Total: " << calcularTotalOrden(o) << ".\n";
+    } else mostrarError(res, s, idOrden, 0, 0, 0, 0, 0);
+}
+
+void menuAnularOrden(SistemaTaller* s) {
+    cout << "\n--- ANULAR ORDEN (escriba CANCELAR para abortar) ---\n";
+    int idOrden;
+    if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (!o) { mostrarError(RES_ORDEN_NO_EXISTE, s, idOrden, 0, 0, 0, 0, 0); return; }
+    bool ok;
+    if (!leerSN("¿Confirmar la anulación? Se devolverá el stock al inventario (S/N): ", &ok)) return;
+    if (!ok) { cout << "Anulación descartada.\n"; return; }
+    Resultado res = anularOrden(s, idOrden);
+    if (res == RES_OK) cout << "Orden #" << idOrden << " ANULADA. El inventario fue restituido.\n";
+    else mostrarError(res, s, idOrden, 0, 0, 0, 0, 0);
+}
+
+void menuVerDetalleOrden(SistemaTaller* s) {
+    int idOrden;
+    if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
+    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
+    if (o) mostrarOrden(o, s);
+    else mostrarError(RES_ORDEN_NO_EXISTE, s, idOrden, 0, 0, 0, 0, 0);
+}
+
+void menuListarOrdenes(SistemaTaller* s) {
+    cout << "\nListar: 1. Todas   2. Por estado   3. Historial de un vehículo\n";
+    int modo;
+    if (!leerEntero("Seleccione: ", &modo, 1, 3)) return;
+    int n = 0;
+    OrdenServicio** lista = nullptr;
+    if (modo == 1) {
+        lista = listarOrdenes(s, &n);
+    } else if (modo == 2) {
+        string t;
+        while (true) {
+            if (!leerLinea("Estado (ABIERTA/CERRADA/ANULADA): ", t)) return;
+            mayusculas(t);
+            if (t == "ABIERTA" || t == "CERRADA" || t == "ANULADA") break;
+            cout << "ERROR: Estado inválido.\n";
+        }
+        lista = listarOrdenesPorEstado(s, t.c_str(), &n);
+    } else {
+        char placa[10];
+        if (!leerPlaca("Placa del vehículo: ", placa, sizeof placa)) return;
+        Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
+        if (!v) { cout << "ERROR: No existe un vehículo con la placa '" << placa << "'.\n"; return; }
+        lista = listarOrdenesPorVehiculo(s, v->id, &n);
+    }
+    if (n == 0) cout << "No hay órdenes que mostrar.\n";
+    else mostrarListaOrdenes(lista, n, s);
+    delete[] lista;
+}
+
+void menuOrdenes(SistemaTaller* s) {
+    const char* items[] = {"1. Abrir orden", "2. Agregar repuesto a orden", "3. Quitar repuesto de orden",
+                           "4. Cerrar orden", "5. Anular orden", "6. Ver detalle de orden",
+                           "7. Listar órdenes", "0. Volver al menú principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("ÓRDENES DE SERVICIO", nullptr, items, 8);
+        int op;
+        if (!leerOpcion(&op, 7)) continue;
+        switch (op) {
+            case 1: menuAbrirOrden(s); break;
+            case 2: menuAgregarRepuestoOrden(s); break;
+            case 3: menuQuitarRepuestoOrden(s); break;
+            case 4: menuCerrarOrden(s); break;
+            case 5: menuAnularOrden(s); break;
+            case 6: menuVerDetalleOrden(s); break;
+            case 7: menuListarOrdenes(s); break;
+            case 0: return;
+        }
+    }
+}
+
+//menu principal
+void menuPrincipal(SistemaTaller* s) {
+    const char* items[] = {"1. Gestión de Vehículos", "2. Gestión de Mecánicos", "3. Inventario de Repuestos",
+                           "4. Órdenes de Servicio", "0. Salir"};
+    char sub[150];
+    snprintf(sub, sizeof sub, "Taller: %s", s->taller.nombre);
+    while (!gEOF) {
+        cout << "\n";
+        caja("SISTEMA DE GESTIÓN DE TALLER", sub, items, 5);
+        int op;
+        if (!leerOpcion(&op, 4)) continue;
+        switch (op) {
+            case 1: menuVehiculos(s); break;
+            case 2: menuMecanicos(s); break;
+            case 3: menuInventario(s); break;
+            case 4: menuOrdenes(s); break;
+            case 0: {
+                bool ok;
+                if (!leerSN("¿Seguro que desea salir? Los datos en memoria se perderán (S/N): ", &ok)) break;
+                if (ok) { cout << "Hasta luego.\n"; return; }
+                break;
+            }
+        }
+    }
+}
+
+
+int main() {
+    Taller datos;
+    memset(&datos, 0, sizeof datos);
+    strcpy(datos.nombre, "Autoservicio El Lago");
+    strcpy(datos.rif, "J-12345678-9");
+    strcpy(datos.direccion, "Av. 5 de Julio, Maracaibo, Zulia");
+    strcpy(datos.telefono, "0261-7000000");
+
+    SistemaTaller sistema;
+    inicializarSistema(&sistema, datos);
+    menuPrincipal(&sistema);
+    liberarSistema(&sistema);
+    return 0;
+}
