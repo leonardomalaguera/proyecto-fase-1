@@ -1194,3 +1194,241 @@ void menuVehiculos(SistemaTaller* s) {
         }
     }
 }
+//mecanicos
+void mostrarMecanico(Mecanico* m, SistemaTaller* s) {
+    cout << "\nMecánico: " << m->nombre << " (" << m->especialidad << ")\n";
+    cout << "  Cédula        : " << m->cedula << "\n";
+    cout << "  Ingreso       : " << m->fechaIngreso << " (ID " << m->id << ")\n";
+    cout << "  Órdenes abiertas: " << contarOrdenesAbiertasMecanico(s, m->id) << "\n";
+}
+
+void mostrarListaMecanicos(Mecanico** lista, int cantidad, SistemaTaller* s) {
+    const int w[] = {6, 24, 16, 16, 13, 12};
+    cout << "\n";
+    lineaTabla("╔", "╦", "╗", w, 6);
+    cout << "║"; celda("ID", w[0]); cout << "║"; celda("Nombre", w[1]); cout << "║"; celda("Cédula", w[2]);
+    cout << "║"; celda("Especialidad", w[3]); cout << "║"; celda("Ingreso", w[4]); cout << "║"; celda("Abiertas", w[5]); cout << "║\n";
+    lineaTabla("╠", "╬", "╣", w, 6);
+    for (int i = 0; i < cantidad; i++) {
+        Mecanico* m = lista[i];
+        char b0[16], b5[16];
+        snprintf(b0, sizeof b0, "%d", m->id);
+        snprintf(b5, sizeof b5, "%d", contarOrdenesAbiertasMecanico(s, m->id));
+        cout << "║"; celda(b0, w[0]); cout << "║"; celda(m->nombre, w[1]); cout << "║"; celda(m->cedula, w[2]);
+        cout << "║"; celda(m->especialidad, w[3]); cout << "║"; celda(m->fechaIngreso, w[4]); cout << "║"; celda(b5, w[5], true); cout << "║\n";
+    }
+    lineaTabla("╚", "╩", "╝", w, 6);
+    cout << "Total de mecánicos: " << cantidad << "\n";
+}
+
+void menuRegistrarMecanico(SistemaTaller* s) {
+    cout << "\n--- REGISTRAR MECÁNICO (escriba CANCELAR para abortar) ---\n";
+    Mecanico d;
+    memset(&d, 0, sizeof d);
+    if (!leerTexto("Nombre completo: ", d.nombre, sizeof d.nombre)) return;
+    if (!leerCedula("Cédula: ", d.cedula, sizeof d.cedula)) return;
+    if (!leerEspecialidad("Especialidad (MOTOR/FRENOS/ELECTRICIDAD/SUSPENSION/GENERAL): ", d.especialidad, sizeof d.especialidad)) return;
+    if (!leerFecha("Fecha de ingreso (YYYY-MM-DD): ", d.fechaIngreso)) return;
+    bool ok;
+    if (!leerSN("¿Confirmar el registro? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Registro descartado.\n"; return; }
+    Resultado res;
+    Mecanico* m = agregarMecanico(s, d, &res);
+    if (m) cout << "Mecánico '" << m->nombre << "' (" << m->especialidad << ") registrado correctamente.\n";
+    else if (res == RES_DUPLICADO) cout << "ERROR: La cédula '" << d.cedula << "' ya está registrada para otro mecánico.\n";
+    else mostrarError(res, s, 0, 0, 0, 0, 0, 0);
+}
+
+void menuBuscarMecanico(SistemaTaller* s) {
+    int id;
+    if (!leerEntero("ID del mecánico: ", &id, 1, INT_MAX)) return;
+    Mecanico* m = buscarMecanicoPorID(s, id);
+    if (m) mostrarMecanico(m, s);
+    else cout << "ERROR: No existe un mecánico con ID " << id << ".\n";
+}
+
+void menuListarMecanicos(SistemaTaller* s) {
+    int n;
+    Mecanico** lista = listarMecanicos(s, &n);
+    if (n == 0) cout << "No hay mecánicos registrados.\n";
+    else mostrarListaMecanicos(lista, n, s);
+    delete[] lista;
+}
+
+void menuMecanicos(SistemaTaller* s) {
+    const char* items[] = {"1. Registrar mecánico", "2. Buscar mecánico por ID", "3. Listar mecánicos",
+                           "0. Volver al menú principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("GESTIÓN DE MECÁNICOS", nullptr, items, 4);
+        int op;
+        if (!leerOpcion(&op, 3)) continue;
+        switch (op) {
+            case 1: menuRegistrarMecanico(s); break;
+            case 2: menuBuscarMecanico(s); break;
+            case 3: menuListarMecanicos(s); break;
+            case 0: return;
+        }
+    }
+}
+
+//repuestos
+void mostrarRepuesto(Repuesto* r) {
+    cout << "\nRepuesto: " << r->codigo << " - " << r->nombre << " (" << r->marca << ")\n";
+    cout << "  Precio vigente : " << fixed;
+    cout.precision(2);
+    cout << r->precio << "\n";
+    cout << "  Stock          : " << r->stock << " (mínimo: " << r->stockMinimo << ")"
+         << (estaBajoStock(r) ? "  *** BAJO STOCK ***" : "") << "\n";
+    cout << "  Registrado     : " << r->fechaRegistro << " (ID " << r->id << ")\n";
+}
+
+void mostrarListaRepuestos(Repuesto** lista, int cantidad) {
+    const int w[] = {6, 11, 26, 12, 10, 8, 7, 14};
+    cout << "\n";
+    lineaTabla("╔", "╦", "╗", w, 8);
+    cout << "║"; celda("ID", w[0]); cout << "║"; celda("Código", w[1]); cout << "║"; celda("Nombre", w[2]);
+    cout << "║"; celda("Marca", w[3]); cout << "║"; celda("Precio", w[4]); cout << "║"; celda("Stock", w[5]);
+    cout << "║"; celda("Mín", w[6]); cout << "║"; celda("Estado", w[7]); cout << "║\n";
+    lineaTabla("╠", "╬", "╣", w, 8);
+    for (int i = 0; i < cantidad; i++) {
+        Repuesto* r = lista[i];
+        char b0[16], b4[24], b5[16], b6[16];
+        snprintf(b0, sizeof b0, "%d", r->id);
+        fmtMoneda(b4, sizeof b4, r->precio);
+        snprintf(b5, sizeof b5, "%d", r->stock);
+        snprintf(b6, sizeof b6, "%d", r->stockMinimo);
+        cout << "║"; celda(b0, w[0]); cout << "║"; celda(r->codigo, w[1]); cout << "║"; celda(r->nombre, w[2]);
+        cout << "║"; celda(r->marca, w[3]); cout << "║"; celda(b4, w[4], true); cout << "║"; celda(b5, w[5], true);
+        cout << "║"; celda(b6, w[6], true); cout << "║"; celda(estaBajoStock(r) ? "BAJO STOCK" : "OK", w[7]); cout << "║\n";
+    }
+    lineaTabla("╚", "╩", "╝", w, 8);
+    cout << "Total de repuestos: " << cantidad << "\n";
+}
+
+void menuRegistrarRepuesto(SistemaTaller* s) {
+    cout << "\n--- REGISTRAR REPUESTO (escriba CANCELAR para abortar) ---\n";
+    Repuesto d;
+    memset(&d, 0, sizeof d);
+    if (!leerCodigo("Código: ", d.codigo, sizeof d.codigo)) return;
+    if (buscarRepuestoPorCodigo(s, d.codigo)) {
+        cout << "ERROR: El código '" << d.codigo << "' ya está registrado.\n";
+        return;
+    }
+    if (!leerTexto("Nombre: ", d.nombre, sizeof d.nombre)) return;
+    if (!leerTexto("Marca: ", d.marca, sizeof d.marca)) return;
+    if (!leerFloat("Precio unitario (> 0): ", &d.precio, 0, true)) return;
+    if (!leerEntero("Stock inicial (>= 0): ", &d.stock, 0, INT_MAX)) return;
+    if (!leerEntero("Stock mínimo (>= 0): ", &d.stockMinimo, 0, INT_MAX)) return;
+    bool ok;
+    if (!leerSN("¿Confirmar el registro? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Registro descartado.\n"; return; }
+    Resultado res;
+    Repuesto* r = agregarRepuesto(s, d, &res);
+    if (r) cout << "Repuesto '" << r->codigo << " - " << r->nombre << "' registrado correctamente.\n";
+    else mostrarError(res, s, 0, 0, 0, 0, 0, 0);
+}
+
+void menuBuscarRepuesto(SistemaTaller* s) {
+    cout << "\nBuscar por: 1. ID   2. Código o nombre parcial\n";
+    int modo;
+    if (!leerEntero("Seleccione: ", &modo, 1, 2)) return;
+    if (modo == 1) {
+        int id;
+        if (!leerEntero("ID del repuesto: ", &id, 1, INT_MAX)) return;
+        Repuesto* r = buscarRepuestoPorID(s, id);
+        if (r) mostrarRepuesto(r);
+        else cout << "ERROR: No existe un repuesto con ID " << id << ".\n";
+    } else {
+        char sub[100];
+        if (!leerTexto("Código o nombre (parcial): ", sub, sizeof sub)) return;
+        int n;
+        Repuesto** lista = buscarRepuestosPorTexto(s, sub, &n);
+        if (n == 0) cout << "No hay repuestos que coincidan con '" << sub << "'.\n";
+        else mostrarListaRepuestos(lista, n);
+        delete[] lista;
+    }
+}
+
+void menuEntradaMercancia(SistemaTaller* s) {
+    cout << "\n--- ENTRADA DE MERCANCÍA (escriba CANCELAR para abortar) ---\n";
+    char cod[20];
+    if (!leerCodigo("Código del repuesto: ", cod, sizeof cod)) return;
+    Repuesto* r = buscarRepuestoPorCodigo(s, cod);
+    if (!r) { cout << "ERROR: No existe un repuesto con el código '" << cod << "'.\n"; return; }
+    cout << "Repuesto: " << r->nombre << " - stock actual: " << r->stock << "\n";
+    int cant;
+    if (!leerEntero("Cantidad que ingresa (> 0): ", &cant, 1, INT_MAX)) return;
+    bool ok;
+    if (!leerSN("¿Confirmar la entrada? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Entrada descartada.\n"; return; }
+    int antes = r->stock;
+    Resultado res = registrarEntradaMercancia(s, r->id, cant);
+    if (res == RES_OK) cout << "Entrada registrada. Stock de '" << r->nombre << "': " << antes << " -> " << r->stock << ".\n";
+    else mostrarError(res, s, 0, 0, 0, r->id, cant, 0);
+}
+
+void menuCambiarPrecio(SistemaTaller* s) {
+    cout << "\n--- CAMBIAR PRECIO (escriba CANCELAR para abortar) ---\n";
+    char cod[20];
+    if (!leerCodigo("Código del repuesto: ", cod, sizeof cod)) return;
+    Repuesto* r = buscarRepuestoPorCodigo(s, cod);
+    if (!r) { cout << "ERROR: No existe un repuesto con el código '" << cod << "'.\n"; return; }
+    cout << fixed;
+    cout.precision(2);
+    cout << "Repuesto: " << r->nombre << " - precio actual: " << r->precio << "\n";
+    float nuevo;
+    if (!leerFloat("Nuevo precio (> 0): ", &nuevo, 0, true)) return;
+    bool ok;
+    if (!leerSN("¿Confirmar el cambio de precio? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Cambio descartado.\n"; return; }
+    float antes = r->precio;
+    Resultado res = cambiarPrecioRepuesto(s, r->id, nuevo);
+    if (res == RES_OK) cout << "Precio de '" << r->nombre << "': " << antes << " -> " << r->precio
+                            << " (las órdenes ya registradas no cambian).\n";
+    else mostrarError(res, s, 0, 0, 0, r->id, 0, 0);
+}
+
+void menuEliminarRepuesto(SistemaTaller* s) {
+    cout << "\n--- ELIMINAR REPUESTO (escriba CANCELAR para abortar) ---\n";
+    char cod[20];
+    if (!leerCodigo("Código del repuesto: ", cod, sizeof cod)) return;
+    Repuesto* r = buscarRepuestoPorCodigo(s, cod);
+    if (!r) { cout << "ERROR: No existe un repuesto con el código '" << cod << "'.\n"; return; }
+    if (repuestoEnUso(s, r->id)) { mostrarError(RES_REPUESTO_EN_USO, s, 0, 0, 0, r->id, 0, 0); return; }
+    bool ok;
+    if (!leerSN("¿Confirmar la eliminación? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Eliminación descartada.\n"; return; }
+    Resultado res = eliminarRepuesto(s, r->id);
+    if (res == RES_OK) cout << "Repuesto '" << cod << "' eliminado.\n";
+    else mostrarError(res, s, 0, 0, 0, r->id, 0, 0);
+}
+
+void menuListarRepuestos(SistemaTaller* s) {
+    int n;
+    Repuesto** lista = listarRepuestos(s, &n);
+    if (n == 0) cout << "No hay repuestos registrados.\n";
+    else mostrarListaRepuestos(lista, n);
+    delete[] lista;
+}
+
+void menuInventario(SistemaTaller* s) {
+    const char* items[] = {"1. Registrar repuesto", "2. Buscar repuesto", "3. Registrar entrada de mercancía",
+                           "4. Cambiar precio", "5. Eliminar repuesto", "6. Listar repuestos",
+                           "0. Volver al menú principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("INVENTARIO DE REPUESTOS", nullptr, items, 7);
+        int op;
+        if (!leerOpcion(&op, 6)) continue;
+        switch (op) {
+            case 1: menuRegistrarRepuesto(s); break;
+            case 2: menuBuscarRepuesto(s); break;
+            case 3: menuEntradaMercancia(s); break;
+            case 4: menuCambiarPrecio(s); break;
+            case 5: menuEliminarRepuesto(s); break;
+            case 6: menuListarRepuestos(s); break;
+            case 0: return;
+        }
+    }
+}
