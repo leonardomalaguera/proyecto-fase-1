@@ -922,3 +922,275 @@ static bool leerCodigo(const char* prompt, char* dest, int max) {
 static bool leerOpcion(int* op, int maxOp) {
     return leerEntero("Seleccione una opción: ", op, 0, maxOp);
 }
+
+static int largoUtf8(const char* s) {
+    int n = 0;
+    for (; *s; ++s) if (((unsigned char)*s & 0xC0) != 0x80) n++;
+    return n;
+}
+
+// Imprime s ocupando exactamente 'ancho' caracteres (cuenta caracteres UTF-8, no bytes)
+static void imprimirPad(const char* s, int ancho, bool derecha) {
+    string r;
+    int n = 0;
+    const char* p = s;
+    while (*p && n < ancho) {
+        unsigned char c = (unsigned char)*p;
+        size_t len = 1;
+        if (c >= 0xF0) len = 4; else if (c >= 0xE0) len = 3; else if (c >= 0xC0) len = 2;
+        size_t resto = strlen(p);
+        if (len > resto) len = resto;
+        r.append(p, len);
+        p += len;
+        n++;
+    }
+    int pad = ancho - n;
+    if (pad < 0) pad = 0;
+    if (derecha) cout << string(pad, ' ') << r;
+    else cout << r << string(pad, ' ');
+}
+
+static void rep(const char* s, int n) { for (int i = 0; i < n; i++) cout << s; }
+
+static void celda(const char* s, int ancho, bool derecha = false) {
+    cout << ' ';
+    imprimirPad(s, ancho - 2, derecha);
+    cout << ' ';
+}
+
+static void lineaTabla(const char* izq, const char* med, const char* der, const int* w, int n) {
+    cout << izq;
+    for (int i = 0; i < n; i++) {
+        rep("-", w[i]);
+        if (i < n - 1) cout << med;
+    }
+    cout << der << "\n";
+}
+
+static void filaMenu(const char* txt, bool centrar) {
+    const int ancho = 43;
+    cout << "|";
+    if (centrar) {
+        int izq = (ancho - largoUtf8(txt)) / 2;
+        if (izq < 0) izq = 0;
+        cout << string(izq, ' ');
+        imprimirPad(txt, ancho - izq, false);
+    } else {
+        cout << ' ';
+        imprimirPad(txt, ancho - 1, false);
+    }
+    cout << "|\n";
+}
+
+static void caja(const char* titulo, const char* sub, const char* const* items, int n) {
+    cout << "+"; rep("-", 43); cout << "-\n";
+    filaMenu(titulo, true);
+    if (sub) filaMenu(sub, true);
+    cout << "+"; rep("-", 43); cout << "+\n";
+    for (int i = 0; i < n; i++) filaMenu(items[i], false);
+    cout << "+"; rep("-", 43); cout << "+\n";
+}
+
+static void fmtMoneda(char* buf, size_t n, float v) { snprintf(buf, n, "%.2f", v); }
+
+
+static void mostrarError(Resultado r, SistemaTaller* s, int idOrden, int idVeh, int idMec,
+                         int idRep, int cantidad, int km) {
+    Vehiculo* v = idVeh > 0 ? buscarVehiculoPorID(s, idVeh) : nullptr;
+    Mecanico* m = idMec > 0 ? buscarMecanicoPorID(s, idMec) : nullptr;
+    Repuesto* rp = idRep > 0 ? buscarRepuestoPorID(s, idRep) : nullptr;
+    OrdenServicio* o = idOrden > 0 ? buscarOrdenPorID(s, idOrden) : nullptr;
+    switch (r) {
+        case RES_OK: break;
+        case RES_VEHICULO_NO_EXISTE: cout << "ERROR: El vehiculo indicado no existe.\n"; break;
+        case RES_MECANICO_NO_EXISTE: cout << "ERROR: El mecanico indicado no existe.\n"; break;
+        case RES_REPUESTO_NO_EXISTE: cout << "ERROR: El repuesto indicado no existe.\n"; break;
+        case RES_ORDEN_NO_EXISTE: cout << "ERROR: La orden #" << idOrden << " no existe.\n"; break;
+        case RES_DUPLICADO: cout << "ERROR: Ya existe un registro con ese codigo o cedula.\n"; break;
+        case RES_DATO_INVALIDO: cout << "ERROR: Alguno de los datos ingresados es invalido.\n"; break;
+        case RES_VEHICULO_CON_ORDEN_ABIERTA: {
+            OrdenServicio* ab = idVeh > 0 ? buscarOrdenAbiertaDeVehiculo(s, idVeh) : nullptr;
+            cout << "ERROR: El vehiculo '" << (v ? v->placa : "?") << "' ya tiene la orden #"
+                 << (ab ? ab->id : 0) << " ABIERTA.\n";
+            break;
+        }
+        case RES_MECANICO_SATURADO:
+            cout << "ERROR: El mecanico '" << (m ? m->nombre : "?") << "' ya tiene "
+                 << (m ? contarOrdenesAbiertasMecanico(s, m->id) : 3) << " ordenes abiertas.\n";
+            break;
+        case RES_KM_MENOR:
+            cout << "ERROR: El kilometraje " << km << " es menor al ultimo registrado del vehiculo '"
+                 << (v ? v->placa : "?") << "' (" << (v ? v->kilometraje : 0) << " km).\n";
+            break;
+        case RES_STOCK_INSUFICIENTE:
+            cout << "ERROR: Stock insuficiente de '" << (rp ? rp->nombre : "?") << "'. Disponible: "
+                 << (rp ? rp->stock : 0) << ", solicitado: " << cantidad << ".\n";
+            break;
+        case RES_ESTADO_INVALIDO:
+            cout << "ERROR: La orden #" << idOrden << " esta " << (o ? o->estado : "?")
+                 << " y no puede modificarse.\n";
+            break;
+        case RES_REPUESTO_NO_EN_ORDEN:
+            cout << "ERROR: El repuesto '" << (rp ? rp->nombre : "?") << "' no esta en la orden #" << idOrden << ".\n";
+            break;
+        case RES_ORDEN_VACIA:
+            cout << "ERROR: La orden #" << idOrden << " no tiene repuestos ni mano de obra; no puede cerrarse.\n";
+            break;
+        case RES_REPUESTO_EN_USO:
+            cout << "ERROR: El repuesto '" << (rp ? rp->nombre : "?")
+                 << "' aparece en el detalle de ordenes y no puede eliminarse.\n";
+            break;
+    }
+}
+
+void mostrarVehiculo(Vehiculo* v) {
+    cout << "\nVehiculo: " << v->placa << " - " << v->marca << " " << v->modelo << " " << v->anio << "\n";
+    cout << "  Kilometraje : " << v->kilometraje << " km\n";
+    cout << "  Propietario : " << v->nombrePropietario << " (Cedula: " << v->cedulaPropietario << ")\n";
+    cout << "  Telefono    : " << v->telefonoPropietario << "\n";
+    cout << "  Registrado  : " << v->fechaRegistro << " (ID " << v->id << ")\n";
+}
+
+void mostrarListaVehiculos(Vehiculo** lista, int cantidad) {
+    const int w[] = {6, 11, 24, 7, 10, 22};
+    cout << "\n";
+    lineaTabla("╔", "╦", "╗", w, 6);
+    cout << "|"; celda("ID", w[0]); cout << "|"; celda("Placa", w[1]); cout << "|"; celda("Vehiculo", w[2]);
+    cout << "|"; celda("Ano", w[3]); cout << "|"; celda("Km", w[4]); cout << "|"; celda("Propietario", w[5]); cout << "|\n";
+    lineaTabla("+", "-", "+", w, 6);
+    for (int i = 0; i < cantidad; i++) {
+        Vehiculo* v = lista[i];
+        char b0[16], nom[120], b3[16], b4[16];
+        snprintf(b0, sizeof b0, "%d", v->id);
+        snprintf(nom, sizeof nom, "%s %s", v->marca, v->modelo);
+        snprintf(b3, sizeof b3, "%d", v->anio);
+        snprintf(b4, sizeof b4, "%d", v->kilometraje);
+        cout << "|"; celda(b0, w[0]); cout << "|"; celda(v->placa, w[1]); cout << "|"; celda(nom, w[2]);
+        cout << "|"; celda(b3, w[3]); cout << "|"; celda(b4, w[4], true); cout << "|"; celda(v->nombrePropietario, w[5]); cout << "|\n";
+    }
+    lineaTabla("+", "-", "+", w, 6);
+    cout << "Total de vehiculos: " << cantidad << "\n";
+}
+
+void menuRegistrarVehiculo(SistemaTaller* s) {
+    cout << "\n--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---\n";
+    Vehiculo d;
+    memset(&d, 0, sizeof d);
+    if (!leerPlaca("Placa: ", d.placa, sizeof d.placa)) return;
+    if (buscarVehiculoPorPlaca(s, d.placa)) {
+        cout << "ERROR: La placa '" << d.placa << "' ya esta registrada.\n";
+        return;
+    }
+    if (!leerTexto("Marca: ", d.marca, sizeof d.marca)) return;
+    if (!leerTexto("Modelo: ", d.modelo, sizeof d.modelo)) return;
+    if (!leerEntero("Ano (1950-2027): ", &d.anio, 1950, 2027)) return;
+    if (!leerEntero("Kilometraje: ", &d.kilometraje, 0, INT_MAX)) return;
+    if (!leerTexto("Nombre del propietario: ", d.nombrePropietario, sizeof d.nombrePropietario)) return;
+    if (!leerCedula("Cedula del propietario: ", d.cedulaPropietario, sizeof d.cedulaPropietario)) return;
+    if (!leerTexto("Telefono del propietario: ", d.telefonoPropietario, sizeof d.telefonoPropietario)) return;
+    bool ok;
+    if (!leerSN("Confirmar el registro (S/N): ", &ok)) return;
+    if (!ok) { cout << "Registro descartado.\n"; return; }
+    Vehiculo* v = agregarVehiculo(s, d);
+    if (!v) cout << "ERROR: No se pudo registrar el vehiculo '" << d.placa << "' (datos invalidos).\n";
+    else cout << "Vehiculo '" << v->placa << "' (" << v->marca << " " << v->modelo << ") registrado correctamente.\n";
+}
+
+void menuBuscarVehiculo(SistemaTaller* s) {
+    cout << "\nBuscar por: 1. Placa   2. Propietario   3. ID\n";
+    int modo;
+    if (!leerEntero("Seleccione: ", &modo, 1, 3)) return;
+    if (modo == 1) {
+        char placa[10];
+        if (!leerPlaca("Placa exacta: ", placa, sizeof placa)) return;
+        Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
+        if (v) mostrarVehiculo(v);
+        else cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n";
+    } else if (modo == 2) {
+        char sub[100];
+        if (!leerTexto("Nombre del propietario (parcial): ", sub, sizeof sub)) return;
+        int n;
+        Vehiculo** r = buscarVehiculosPorPropietario(s, sub, &n);
+        if (n == 0) cout << "No hay vehiculos cuyo propietario contenga '" << sub << "'.\n";
+        else mostrarListaVehiculos(r, n);
+        delete[] r;   // solo el arreglo de punteros
+    } else {
+        int id;
+        if (!leerEntero("ID del vehiculo: ", &id, 1, INT_MAX)) return;
+        Vehiculo* v = buscarVehiculoPorID(s, id);
+        if (v) mostrarVehiculo(v);
+        else cout << "ERROR: No existe un vehiulo con ID " << id << ".\n";
+    }
+}
+
+void menuActualizarVehiculo(SistemaTaller* s) {
+    cout << "\n--- ACTUALIZAR VEHICULO (escriba CANCELAR para abortar) ---\n";
+    char placa[10];
+    if (!leerPlaca("Placa del vehiculo a actualizar: ", placa, sizeof placa)) return;
+    Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
+    if (!v) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
+    mostrarVehiculo(v);
+    cout << "(La placa, el kilometraje y la fecha de registro no se modifican)\n";
+    Vehiculo d;
+    memset(&d, 0, sizeof d);
+    if (!leerTexto("Nueva marca: ", d.marca, sizeof d.marca)) return;
+    if (!leerTexto("Nuevo modelo: ", d.modelo, sizeof d.modelo)) return;
+    if (!leerEntero("Nuevo ano (1950-2027): ", &d.anio, 1950, 2027)) return;
+    if (!leerTexto("Nuevo nombre del propietario: ", d.nombrePropietario, sizeof d.nombrePropietario)) return;
+    if (!leerCedula("Nueva cedula del propietario: ", d.cedulaPropietario, sizeof d.cedulaPropietario)) return;
+    if (!leerTexto("Nuevo telefono del propietario: ", d.telefonoPropietario, sizeof d.telefonoPropietario)) return;
+    bool ok;
+    if (!leerSN("Confirmar la actualizacion (S/N): ", &ok)) return;
+    if (!ok) { cout << "Actualizacion descartada.\n"; return; }
+    if (actualizarVehiculo(s, v->id, d)) cout << "Vehiculo '" << placa << "' actualizado correctamente.\n";
+    else cout << "ERROR: No se pudo actualizar el vehiculo '" << placa << "'.\n";
+}
+
+void menuEliminarVehiculo(SistemaTaller* s) {
+    cout << "\n--- ELIMINAR VEHICULO (escriba CANCELAR para abortar) ---\n";
+    char placa[10];
+    if (!leerPlaca("Placa del vehiculo a eliminar: ", placa, sizeof placa)) return;
+    Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
+    if (!v) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
+    int n = contarOrdenesVehiculo(s, v->id);
+    if (n > 0) {
+        cout << "ERROR: El vehiculo '" << placa << "' tiene " << n
+             << (n == 1 ? " orden registrada" : " ordenes registradas") << " y no puede eliminarse.\n";
+        return;
+    }
+    bool ok;
+    if (!leerSN("Confirmar la eliminacion (S/N): ", &ok)) return;
+    if (!ok) { cout << "Eliminacion descartada.\n"; return; }
+    if (eliminarVehiculo(s, v->id)) cout << "Vehiculo '" << placa << "' eliminado.\n";
+    else cout << "ERROR: No se pudo eliminar el vehiculo '" << placa << "'.\n";
+}
+
+void menuListarVehiculos(SistemaTaller* s) {
+    int n;
+    Vehiculo** lista = listarVehiculos(s, &n);
+    if (n == 0) cout << "No hay vehiculos registrados.\n";
+    else {
+        mostrarListaVehiculos(lista, n);
+        cout << "(Capacidad actual del arreglo de vehiculos: " << s->capacidadVehiculos << ")\n";
+    }
+    delete[] lista;
+}
+
+void menuVehiculos(SistemaTaller* s) {
+    const char* items[] = {"1. Registrar vehiculo", "2. Buscar vehiculo", "3. Actualizar vehiculo",
+                           "4. Eliminar vehiculo", "5. Listar vehiculos", "0. Volver al menu principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("GESTION DE VEHICULOS", nullptr, items, 6);
+        int op;
+        if (!leerOpcion(&op, 5)) continue;
+        switch (op) {
+            case 1: menuRegistrarVehiculo(s); break;
+            case 2: menuBuscarVehiculo(s); break;
+            case 3: menuActualizarVehiculo(s); break;
+            case 4: menuEliminarVehiculo(s); break;
+            case 5: menuListarVehiculos(s); break;
+            case 0: return;
+        }
+    }
+}
