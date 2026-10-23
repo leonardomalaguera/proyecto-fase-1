@@ -118,7 +118,7 @@ bool estaBajoStock(const Repuesto* r);               // stock <= stockMinimo
 
 void inicializarSistema(SistemaTaller* s, Taller taller);
 void liberarSistema(SistemaTaller* s);
-
+void cargarSistema(SistemaTaller* s, const char* nombreArchivo);
 Vehiculo* agregarVehiculo(SistemaTaller* s, Vehiculo datos);
 Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id);
 Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa);
@@ -1700,7 +1700,6 @@ void menuPrincipal(SistemaTaller* s) {
     }
 }
 
-
 int main() {
     Taller datos;
     memset(&datos, 0, sizeof datos);
@@ -1715,3 +1714,4 @@ int main() {
     liberarSistema(&sistema);
     return 0;
 }
+
