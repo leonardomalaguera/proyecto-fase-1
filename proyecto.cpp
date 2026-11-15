@@ -3,9 +3,12 @@
 #include <ctime>
 #include <cstdio>
 #include <cstdlib>
+#include <cstdarg>
 #include <climits>
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <filesystem>
 #ifdef _WIN32
 #include <io.h>
 #define ES_TTY() _isatty(_fileno(stdin))
@@ -14,13 +17,36 @@
 #define ES_TTY() isatty(fileno(stdin))
 #endif
 
+//constantes
+const int MAX_DETALLES = 20;        // lineas de detalle por orden 
+const int MAX_RESULTADOS = 50;      // maximo de registros que entrega una busqueda o listado
+const int MAX_PROBLEMAS = 100;      // maximo de mensajes que guarda el reporte de integridad
+const int TOP_REPUESTOS = 10;       // tamano del ranking de repuestos mas usados
+const int MAX_ORDENES_ABIERTAS_MECANICO = 3;
+
+const char* const DIR_DATOS = "datos";
+const char* const RUTA_TALLER = "datos/taller.bin";
+const char* const RUTA_VEHICULOS = "datos/vehiculos.bin";
+const char* const RUTA_MECANICOS = "datos/mecanicos.bin";
+const char* const RUTA_REPUESTOS = "datos/repuestos.bin";
+const char* const RUTA_ORDENES = "datos/ordenes.bin";
+
 
 // estructuras
+struct ArchivoHeader {
+    int cantidadRegistros;   // total historico (incluye eliminados logicamente)
+    int proximoID;           // siguiente ID a asignar
+    int registrosActivos;    // registros con eliminado == false
+    int version;             // version del formato del archivo
+};
+
 struct Taller {
     char nombre[100];
     char rif[20];
     char direccion[200];
     char telefono[20];
+    time_t fechaCreacion;
+    time_t fechaUltimaModificacion;
 };
 
 struct Vehiculo {
@@ -33,7 +59,9 @@ struct Vehiculo {
     char nombrePropietario[100];
     char cedulaPropietario[20];
     char telefonoPropietario[20];
-    char fechaRegistro[11];
+    bool eliminado;
+    time_t fechaCreacion;
+    time_t fechaUltimaModificacion;
 };
 
 struct Mecanico {
@@ -42,6 +70,9 @@ struct Mecanico {
     char cedula[20];
     char especialidad[20];
     char fechaIngreso[11];
+    bool eliminado;          // true = dado de baja
+    time_t fechaCreacion;
+    time_t fechaUltimaModificacion;
 };
 
 struct Repuesto {
@@ -52,7 +83,9 @@ struct Repuesto {
     float precio;
     int stock;
     int stockMinimo;
-    char fechaRegistro[11];
+    bool eliminado;
+    time_t fechaCreacion;
+    time_t fechaUltimaModificacion;
 };
 
 struct DetalleOrden {
@@ -71,41 +104,63 @@ struct OrdenServicio {
     char descripcionFalla[200];
     int kilometrajeIngreso;
     float manoObra;
-    // Arreglo dinamico propio de la orden
-    DetalleOrden* detalles;
-    int numDetalles;
-    int capacidadDetalles;
+    DetalleOrden detalles[MAX_DETALLES];   
+    int numDetalles;                       
+    bool eliminado;          
+    time_t fechaCreacion;
+    time_t fechaUltimaModificacion;
+};
+struct ReporteIntegridad {
+    int vehiculos, mecanicos, repuestos, ordenes;   // registros verificados
+    int problemas;                                  // total de problemas hallados
+    int mensajesGuardados;                          // cuantos mensajes caben en 'mensajes'
+    char mensajes[MAX_PROBLEMAS][160];
 };
 
-struct SistemaTaller {
-    Taller taller;
-    Vehiculo* vehiculos;      int numVehiculos;  int capacidadVehiculos;
-    Mecanico* mecanicos;      int numMecanicos;  int capacidadMecanicos;
-    Repuesto* repuestos;      int numRepuestos;  int capacidadRepuestos;
-    OrdenServicio* ordenes;   int numOrdenes;    int capacidadOrdenes;
-    int siguienteIdVehiculo;
-    int siguienteIdMecanico;
-    int siguienteIdRepuesto;
-    int siguienteIdOrden;
+struct FilaUsoRepuesto {
+    int idRepuesto;
+    int unidades;
 };
 
-// Codigo de resultado para las operaciones de mecanicos, repuestos y ordenes
+struct FilaFacturacion {
+    Mecanico mecanico;
+    int ordenesCerradas;
+    float manoObra;
+    float repuestos;
+};
+
+// Codigo de estado de la capa de persistencia
+enum EstadoArchivo {
+    ARCH_OK = 0,
+    ARCH_NO_ABRE,           // el archivo no se pudo abrir
+    ARCH_ID_INEXISTENTE,    // el ID no corresponde a ningun registro del archivo
+    ARCH_YA_ELIMINADO,      // el registro ya estaba marcado como eliminado
+    ARCH_ERROR_IO           // fallo de lectura o escritura
+};
+
+// Codigo de resultado para las operaciones de la capa de logica
 enum Resultado {
     RES_OK = 0,
+    RES_ERROR_ARCHIVO,
     RES_VEHICULO_NO_EXISTE,
+    RES_VEHICULO_ELIMINADO,
     RES_MECANICO_NO_EXISTE,
+    RES_MECANICO_DADO_BAJA,
     RES_REPUESTO_NO_EXISTE,
+    RES_REPUESTO_ELIMINADO,
     RES_ORDEN_NO_EXISTE,
     RES_DUPLICADO,
     RES_DATO_INVALIDO,
     RES_VEHICULO_CON_ORDEN_ABIERTA,
+    RES_VEHICULO_CON_ORDENES,
     RES_MECANICO_SATURADO,
     RES_KM_MENOR,
     RES_STOCK_INSUFICIENTE,
     RES_ESTADO_INVALIDO,
     RES_REPUESTO_NO_EN_ORDEN,
     RES_ORDEN_VACIA,
-    RES_REPUESTO_EN_USO
+    RES_REPUESTO_EN_USO,
+    RES_LIMITE_DETALLES,
 };
 
 bool fechaValida(const char* fecha);                 // YYYY-MM-DD valida
