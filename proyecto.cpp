@@ -324,197 +324,295 @@ bool inicializarArchivo(const char* ruta) {
     return true;
 }
 
-
-// redimensionamiento 
-// cuando num == capacidad se reserva un arreglo del doble se copia y se libera el viejo.
-static void crecerVehiculos(SistemaTaller* s) {
-    if (s->numVehiculos < s->capacidadVehiculos) return;
-    int nueva = s->capacidadVehiculos * 2;
-    Vehiculo* nuevo = new Vehiculo[nueva]();
-    for (int i = 0; i < s->numVehiculos; i++) nuevo[i] = s->vehiculos[i];
-    delete[] s->vehiculos;
-    s->vehiculos = nuevo;
-    s->capacidadVehiculos = nueva;
+bool crearCarpeta(const char* ruta) {
+    std::error_code ec;
+    std::filesystem::create_directories(ruta, ec);
+    if (ec || !std::filesystem::is_directory(ruta, ec)) { registrarFalloArchivo(ruta); return false; }
+    return true;
 }
 
-static void crecerMecanicos(SistemaTaller* s) {
-    if (s->numMecanicos < s->capacidadMecanicos) return;
-    int nueva = s->capacidadMecanicos * 2;
-    Mecanico* nuevo = new Mecanico[nueva]();
-    for (int i = 0; i < s->numMecanicos; i++) nuevo[i] = s->mecanicos[i];
-    delete[] s->mecanicos;
-    s->mecanicos = nuevo;
-    s->capacidadMecanicos = nueva;
+bool existeArchivo(const char* ruta) {
+    std::ifstream f(ruta, std::ios::binary);
+    return f.is_open();
 }
 
-static void crecerRepuestos(SistemaTaller* s) {
-    if (s->numRepuestos < s->capacidadRepuestos) return;
-    int nueva = s->capacidadRepuestos * 2;
-    Repuesto* nuevo = new Repuesto[nueva]();
-    for (int i = 0; i < s->numRepuestos; i++) nuevo[i] = s->repuestos[i];
-    delete[] s->repuestos;
-    s->repuestos = nuevo;
-    s->capacidadRepuestos = nueva;
-}
-
-static void crecerOrdenes(SistemaTaller* s) {
-    if (s->numOrdenes < s->capacidadOrdenes) return;
-    int nueva = s->capacidadOrdenes * 2;
-    OrdenServicio* nuevo = new OrdenServicio[nueva]();
-    // Copia superficial cada orden traslada su puntero detalles al nuevo arreglo.
-    // El arreglo de detalles no se copia ni se pierde solo cambia de dueño.
-    // delete[] del arreglo viejo no libera los detalles porque OrdenServicio no tiene destructor.
-    for (int i = 0; i < s->numOrdenes; i++) nuevo[i] = s->ordenes[i];
-    delete[] s->ordenes;
-    s->ordenes = nuevo;
-    s->capacidadOrdenes = nueva;
-}
-
-static void crecerDetalles(OrdenServicio* o) {
-    if (o->numDetalles < o->capacidadDetalles) return;
-    int nueva = o->capacidadDetalles * 2;
-    DetalleOrden* nuevo = new DetalleOrden[nueva]();
-    for (int i = 0; i < o->numDetalles; i++) nuevo[i] = o->detalles[i];
-    delete[] o->detalles;
-    o->detalles = nuevo;
-    o->capacidadDetalles = nueva;
-}
-
-//sistema 
-void inicializarSistema(SistemaTaller* s, Taller taller) {
-    s->taller = taller;
-    s->capacidadVehiculos = 4; s->numVehiculos = 0; s->vehiculos = new Vehiculo[4]();
-    s->capacidadMecanicos = 4; s->numMecanicos = 0; s->mecanicos = new Mecanico[4]();
-    s->capacidadRepuestos = 4; s->numRepuestos = 0; s->repuestos = new Repuesto[4]();
-    s->capacidadOrdenes   = 4; s->numOrdenes   = 0; s->ordenes   = new OrdenServicio[4]();
-    s->siguienteIdVehiculo = 1;
-    s->siguienteIdMecanico = 1;
-    s->siguienteIdRepuesto = 1;
-    s->siguienteIdOrden = 1;
-}
-
-void liberarSistema(SistemaTaller* s) {
-    // Primero la memoria anidada el arreglo de detalles de cada orden
-    for (int i = 0; i < s->numOrdenes; i++) {
-        delete[] s->ordenes[i].detalles;
-        s->ordenes[i].detalles = nullptr;
+// Copia byte a byte un archivo binario
+bool copiarArchivoBinario(const char* origen, const char* destino) {
+    std::ifstream in(origen, std::ios::binary);
+    if (!in.is_open()) { registrarFalloArchivo(origen); return false; }
+    std::ofstream out(destino, std::ios::binary);
+    if (!out.is_open()) { registrarFalloArchivo(destino); return false; }
+    char buffer[4096];
+    while (in) {
+        in.read(buffer, sizeof buffer);
+        std::streamsize leidos = in.gcount();
+        if (leidos > 0) out.write(buffer, leidos);
     }
-    delete[] s->ordenes;   s->ordenes = nullptr;
-    delete[] s->repuestos; s->repuestos = nullptr;
-    delete[] s->mecanicos; s->mecanicos = nullptr;
-    delete[] s->vehiculos; s->vehiculos = nullptr;
-    s->numVehiculos = s->numMecanicos = s->numRepuestos = s->numOrdenes = 0;
-    s->capacidadVehiculos = s->capacidadMecanicos = s->capacidadRepuestos = s->capacidadOrdenes = 0;
-}
-
-//vehiculos 
-static bool propietarioYModeloValidos(const Vehiculo& v) {
-    if (vacio(v.marca) || vacio(v.modelo) || vacio(v.nombrePropietario) || vacio(v.telefonoPropietario)) return false;
-    if (v.anio < 1950 || v.anio > 2027) return false;
-    if (!cedulaValida(v.cedulaPropietario)) return false;
+    out.flush();
+    if (!out) { registrarFalloArchivo(destino); return false; }
     return true;
 }
 
-Vehiculo* agregarVehiculo(SistemaTaller* s, Vehiculo datos) {
-    aMayusculas(datos.placa);
-    if (!placaValida(datos.placa)) return nullptr;
-    if (buscarVehiculoPorPlaca(s, datos.placa) != nullptr) return nullptr;
-    if (!propietarioYModeloValidos(datos)) return nullptr;
-    if (datos.kilometraje < 0) return nullptr;
+bool existeArchivoTaller() { return existeArchivo(RUTA_TALLER); }
 
-    crecerVehiculos(s);
-    datos.id = s->siguienteIdVehiculo++;
-    fechaActual(datos.fechaRegistro);
-    s->vehiculos[s->numVehiculos] = datos;
-    s->numVehiculos++;
-    return &s->vehiculos[s->numVehiculos - 1];
-}
-
-Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id) {
-    for (int i = 0; i < s->numVehiculos; i++)
-        if (s->vehiculos[i].id == id) return &s->vehiculos[i];
-    return nullptr;
-}
-
-Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa) {
-    for (int i = 0; i < s->numVehiculos; i++)
-        if (strcmp(s->vehiculos[i].placa, placa) == 0) return &s->vehiculos[i];
-    return nullptr;
-}
-
-Vehiculo** buscarVehiculosPorPropietario(SistemaTaller* s, const char* sub, int* cantidad) {
-    int n = 0;
-    for (int i = 0; i < s->numVehiculos; i++)
-        if (contieneIgnorandoCase(s->vehiculos[i].nombrePropietario, sub)) n++;
-    *cantidad = n;
-    if (n == 0) return nullptr;
-    Vehiculo** r = new Vehiculo*[n];
-    int k = 0;
-    for (int i = 0; i < s->numVehiculos; i++)
-        if (contieneIgnorandoCase(s->vehiculos[i].nombrePropietario, sub)) r[k++] = &s->vehiculos[i];
-    return r;
-}
-
-Vehiculo** listarVehiculos(SistemaTaller* s, int* cantidad) {
-    *cantidad = s->numVehiculos;
-    if (s->numVehiculos == 0) return nullptr;
-    Vehiculo** r = new Vehiculo*[s->numVehiculos];
-    for (int i = 0; i < s->numVehiculos; i++) r[i] = &s->vehiculos[i];
-    return r;
-}
-
-bool actualizarVehiculo(SistemaTaller* s, int id, Vehiculo datos) {
-    Vehiculo* v = buscarVehiculoPorID(s, id);
-    if (!v) return false;
-    if (!propietarioYModeloValidos(datos)) return false;
-    copiar(v->marca, datos.marca, sizeof v->marca);
-    copiar(v->modelo, datos.modelo, sizeof v->modelo);
-    v->anio = datos.anio;
-    copiar(v->nombrePropietario, datos.nombrePropietario, sizeof v->nombrePropietario);
-    copiar(v->cedulaPropietario, datos.cedulaPropietario, sizeof v->cedulaPropietario);
-    copiar(v->telefonoPropietario, datos.telefonoPropietario, sizeof v->telefonoPropietario);
+bool leerTaller(Taller& t) {
+    std::ifstream f(RUTA_TALLER, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_TALLER); return false; }
+    f.seekg(0, std::ios::beg);
+    f.read(reinterpret_cast<char*>(&t), sizeof t);
+    if (!f) { registrarFalloArchivo(RUTA_TALLER); return false; }
     return true;
 }
 
-int contarOrdenesVehiculo(SistemaTaller* s, int idVehiculo) {
-    int n = 0;
-    for (int i = 0; i < s->numOrdenes; i++)
-        if (s->ordenes[i].idVehiculo == idVehiculo) n++;
-    return n;
-}
-
-bool eliminarVehiculo(SistemaTaller* s, int id) {
-    int idx = -1;
-    for (int i = 0; i < s->numVehiculos; i++)
-        if (s->vehiculos[i].id == id) { idx = i; break; }
-    if (idx < 0) return false;
-    if (contarOrdenesVehiculo(s, id) > 0) return false;
-    for (int i = idx; i < s->numVehiculos - 1; i++) s->vehiculos[i] = s->vehiculos[i + 1];
-    s->numVehiculos--;
+bool guardarTaller(Taller& t) {
+    time_t ahora = time(nullptr);
+    t.fechaCreacion = ahora;
+    t.fechaUltimaModificacion = ahora;
+    std::ofstream f(RUTA_TALLER, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_TALLER); return false; }
+    f.write(reinterpret_cast<const char*>(&t), sizeof t);
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_TALLER); return false; }
     return true;
 }
 
-Mecanico* agregarMecanico(SistemaTaller* s, Mecanico datos, Resultado* res) {
-    aMayusculas(datos.cedula);
-    aMayusculas(datos.especialidad);
-    if (vacio(datos.nombre) || !cedulaValida(datos.cedula) ||
-        !especialidadValida(datos.especialidad) || !fechaValida(datos.fechaIngreso)) {
-        setRes(res, RES_DATO_INVALIDO);
-        return nullptr;
-    }
-    for (int i = 0; i < s->numMecanicos; i++)
-        if (strcmp(s->mecanicos[i].cedula, datos.cedula) == 0) {
-            setRes(res, RES_DUPLICADO);
-            return nullptr;
-        }
-    crecerMecanicos(s);
-    datos.id = s->siguienteIdMecanico++;
-    s->mecanicos[s->numMecanicos] = datos;
-    s->numMecanicos++;
-    setRes(res, RES_OK);
-    return &s->mecanicos[s->numMecanicos - 1];
+// Crea la carpeta datos/ y los archivos de entidades que falten (con su header inicial).
+bool inicializarArchivosSistema() {
+    if (!crearCarpeta(DIR_DATOS)) return false;
+    return inicializarArchivo(RUTA_VEHICULOS) && inicializarArchivo(RUTA_MECANICOS) &&
+           inicializarArchivo(RUTA_REPUESTOS) && inicializarArchivo(RUTA_ORDENES);
 }
 
+int registrosFisicosVehiculos() { return totalRegistrosEnArchivo(RUTA_VEHICULOS, sizeof(Vehiculo)); }
+
+// 1.- Guardar un registro nuevo
+EstadoArchivo guardarVehiculo(Vehiculo& x) {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_VEHICULOS, h)) return ARCH_NO_ABRE;
+    time_t ahora = time(nullptr);
+    x.id = h.proximoID;
+    x.eliminado = false;
+    x.fechaCreacion = ahora;
+    x.fechaUltimaModificacion = ahora;
+    std::fstream f(RUTA_VEHICULOS, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_VEHICULOS); return ARCH_NO_ABRE; }
+    f.seekp(posicionRegistro(sizeof(Vehiculo), h.cantidadRegistros), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(Vehiculo));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_VEHICULOS); return ARCH_ERROR_IO; }
+    f.close();
+    h.cantidadRegistros++;
+    h.registrosActivos++;
+    h.proximoID++;
+    if (!escribirHeader(RUTA_VEHICULOS, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
+}
+
+// 2.- Leer por ID
+EstadoArchivo leerVehiculoPorID(int id, Vehiculo& out, long long* posicion = nullptr) {
+    std::ifstream f(RUTA_VEHICULOS, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_VEHICULOS); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(Vehiculo));
+    if (id < 1 || id > total) return ARCH_ID_INEXISTENTE;
+    long long pos = posicionRegistro(sizeof(Vehiculo), id - 1);
+    f.seekg(pos, std::ios::beg);
+    f.read(reinterpret_cast<char*>(&out), sizeof(Vehiculo));
+    if (!f) { registrarFalloArchivo(RUTA_VEHICULOS); return ARCH_ERROR_IO; }
+    if (posicion) *posicion = pos;
+    return ARCH_OK;
+}
+
+// 3.- Sobrescribir el registro en su posicion original y actualizar fechaUltimaModificacion
+EstadoArchivo sobrescribirVehiculo(Vehiculo& x) {
+    std::fstream f(RUTA_VEHICULOS, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_VEHICULOS); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(Vehiculo));
+    if (x.id < 1 || x.id > total) return ARCH_ID_INEXISTENTE;
+    x.fechaUltimaModificacion = time(nullptr);
+    f.seekp(posicionRegistro(sizeof(Vehiculo), x.id - 1), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(Vehiculo));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_VEHICULOS); return ARCH_ERROR_IO; }
+    return ARCH_OK;
+}
+
+// 4.- Borrado logico
+EstadoArchivo marcarVehiculoEliminado(int id) {
+    Vehiculo x;
+    EstadoArchivo e = leerVehiculoPorID(id, x);
+    if (e != ARCH_OK) return e;
+    if (x.eliminado) return ARCH_YA_ELIMINADO;
+    x.eliminado = true;
+    e = sobrescribirVehiculo(x);
+    if (e != ARCH_OK) return e;
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_VEHICULOS, h)) return ARCH_NO_ABRE;
+    h.registrosActivos--;
+    if (!escribirHeader(RUTA_VEHICULOS, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
+}
+
+// 5.- Contar activos
+int contarVehiculosActivos() {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_VEHICULOS, h)) return -1;
+    return h.registrosActivos;
+}
+
+int registrosFisicosMecanicos() { return totalRegistrosEnArchivo(RUTA_MECANICOS, sizeof(Mecanico)); }
+
+// 1.- Guardar un registro nuevo
+EstadoArchivo guardarMecanico(Mecanico& x) {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_MECANICOS, h)) return ARCH_NO_ABRE;
+    time_t ahora = time(nullptr);
+    x.id = h.proximoID;
+    x.eliminado = false;
+    x.fechaCreacion = ahora;
+    x.fechaUltimaModificacion = ahora;
+    std::fstream f(RUTA_MECANICOS, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_MECANICOS); return ARCH_NO_ABRE; }
+    f.seekp(posicionRegistro(sizeof(Mecanico), h.cantidadRegistros), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(Mecanico));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_MECANICOS); return ARCH_ERROR_IO; }
+    f.close();
+    h.cantidadRegistros++;
+    h.registrosActivos++;
+    h.proximoID++;
+    if (!escribirHeader(RUTA_MECANICOS, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
+}
+
+// 2.- Leer por ID
+EstadoArchivo leerMecanicoPorID(int id, Mecanico& out, long long* posicion = nullptr) {
+    std::ifstream f(RUTA_MECANICOS, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_MECANICOS); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(Mecanico));
+    if (id < 1 || id > total) return ARCH_ID_INEXISTENTE;
+    long long pos = posicionRegistro(sizeof(Mecanico), id - 1);
+    f.seekg(pos, std::ios::beg);
+    f.read(reinterpret_cast<char*>(&out), sizeof(Mecanico));
+    if (!f) { registrarFalloArchivo(RUTA_MECANICOS); return ARCH_ERROR_IO; }
+    if (posicion) *posicion = pos;
+    return ARCH_OK;
+}
+
+// 3.- Sobrescribir el registro en su posicion original y actualizar fechaUltimaModificacion
+EstadoArchivo sobrescribirMecanico(Mecanico& x) {
+    std::fstream f(RUTA_MECANICOS, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_MECANICOS); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(Mecanico));
+    if (x.id < 1 || x.id > total) return ARCH_ID_INEXISTENTE;
+    x.fechaUltimaModificacion = time(nullptr);
+    f.seekp(posicionRegistro(sizeof(Mecanico), x.id - 1), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(Mecanico));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_MECANICOS); return ARCH_ERROR_IO; }
+    return ARCH_OK;
+}
+
+// 4.- Borrado logico
+EstadoArchivo marcarMecanicoEliminado(int id) {
+    Mecanico x;
+    EstadoArchivo e = leerMecanicoPorID(id, x);
+    if (e != ARCH_OK) return e;
+    if (x.eliminado) return ARCH_YA_ELIMINADO;
+    x.eliminado = true;
+    e = sobrescribirMecanico(x);
+    if (e != ARCH_OK) return e;
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_MECANICOS, h)) return ARCH_NO_ABRE;
+    h.registrosActivos--;
+    if (!escribirHeader(RUTA_MECANICOS, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
+}
+
+// 5.- Contar activos
+int contarMecanicosActivos() {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_MECANICOS, h)) return -1;
+    return h.registrosActivos;
+}
+
+int registrosFisicosRepuestos() { return totalRegistrosEnArchivo(RUTA_REPUESTOS, sizeof(Repuesto)); }
+
+// 1.- Guardar un registro nuevo
+EstadoArchivo guardarRepuesto(Repuesto& x) {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_REPUESTOS, h)) return ARCH_NO_ABRE;
+    time_t ahora = time(nullptr);
+    x.id = h.proximoID;
+    x.eliminado = false;
+    x.fechaCreacion = ahora;
+    x.fechaUltimaModificacion = ahora;
+    std::fstream f(RUTA_REPUESTOS, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_REPUESTOS); return ARCH_NO_ABRE; }
+    f.seekp(posicionRegistro(sizeof(Repuesto), h.cantidadRegistros), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(Repuesto));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_REPUESTOS); return ARCH_ERROR_IO; }
+    f.close();
+    h.cantidadRegistros++;
+    h.registrosActivos++;
+    h.proximoID++;
+    if (!escribirHeader(RUTA_REPUESTOS, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
+}
+
+// 2.- Leer por ID
+EstadoArchivo leerRepuestoPorID(int id, Repuesto& out, long long* posicion = nullptr) {
+    std::ifstream f(RUTA_REPUESTOS, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_REPUESTOS); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(Repuesto));
+    if (id < 1 || id > total) return ARCH_ID_INEXISTENTE;
+    long long pos = posicionRegistro(sizeof(Repuesto), id - 1);
+    f.seekg(pos, std::ios::beg);
+    f.read(reinterpret_cast<char*>(&out), sizeof(Repuesto));
+    if (!f) { registrarFalloArchivo(RUTA_REPUESTOS); return ARCH_ERROR_IO; }
+    if (posicion) *posicion = pos;
+    return ARCH_OK;
+}
+
+// 3.- Sobrescribir el registro en su posicion original y actualizar fechaUltimaModificacion
+EstadoArchivo sobrescribirRepuesto(Repuesto& x) {
+    std::fstream f(RUTA_REPUESTOS, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_REPUESTOS); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(Repuesto));
+    if (x.id < 1 || x.id > total) return ARCH_ID_INEXISTENTE;
+    x.fechaUltimaModificacion = time(nullptr);
+    f.seekp(posicionRegistro(sizeof(Repuesto), x.id - 1), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(Repuesto));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_REPUESTOS); return ARCH_ERROR_IO; }
+    return ARCH_OK;
+}
+
+// 4.- Borrado logico
+EstadoArchivo marcarRepuestoEliminado(int id) {
+    Repuesto x;
+    EstadoArchivo e = leerRepuestoPorID(id, x);
+    if (e != ARCH_OK) return e;
+    if (x.eliminado) return ARCH_YA_ELIMINADO;
+    x.eliminado = true;
+    e = sobrescribirRepuesto(x);
+    if (e != ARCH_OK) return e;
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_REPUESTOS, h)) return ARCH_NO_ABRE;
+    h.registrosActivos--;
+    if (!escribirHeader(RUTA_REPUESTOS, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
+}
+
+// 5.- Contar activos
+int contarRepuestosActivos() {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_REPUESTOS, h)) return -1;
+    return h.registrosActivos;
+}
+
+
+        
 Mecanico* buscarMecanicoPorID(SistemaTaller* s, int id) {
     for (int i = 0; i < s->numMecanicos; i++)
         if (s->mecanicos[i].id == id) return &s->mecanicos[i];
