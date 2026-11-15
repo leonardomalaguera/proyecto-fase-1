@@ -163,101 +163,8 @@ enum Resultado {
     RES_LIMITE_DETALLES,
 };
 
-bool fechaValida(const char* fecha);                 // YYYY-MM-DD valida
-void fechaActual(char* out11);                       // escribe YYYY-MM-DD
-bool cedulaValida(const char* cedula);               // digitos prefijo V-/E-/J- opcional
-bool placaValida(const char* placa);                 // alfanumerica 6 o 7 caracteres
-bool especialidadValida(const char* esp);
-bool contieneIgnorandoCase(const char* texto, const char* sub);
-bool estaBajoStock(const Repuesto* r);               // stock <= stockMinimo
 
-void inicializarSistema(SistemaTaller* s, Taller taller);
-void liberarSistema(SistemaTaller* s);
-void cargarSistema(SistemaTaller* s, const char* nombreArchivo);
-Vehiculo* agregarVehiculo(SistemaTaller* s, Vehiculo datos);
-Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id);
-Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa);
-Vehiculo** buscarVehiculosPorPropietario(SistemaTaller* s, const char* subcadena, int* cantidad);
-Vehiculo** listarVehiculos(SistemaTaller* s, int* cantidad);
-bool actualizarVehiculo(SistemaTaller* s, int id, Vehiculo datos);
-bool eliminarVehiculo(SistemaTaller* s, int id);
-int contarOrdenesVehiculo(SistemaTaller* s, int idVehiculo);
-
-Mecanico* agregarMecanico(SistemaTaller* s, Mecanico datos, Resultado* res);
-Mecanico* buscarMecanicoPorID(SistemaTaller* s, int id);
-Mecanico** listarMecanicos(SistemaTaller* s, int* cantidad);
-int contarOrdenesAbiertasMecanico(SistemaTaller* s, int idMecanico);
-
-Repuesto* agregarRepuesto(SistemaTaller* s, Repuesto datos, Resultado* res);
-Repuesto* buscarRepuestoPorID(SistemaTaller* s, int id);
-Repuesto* buscarRepuestoPorCodigo(SistemaTaller* s, const char* codigo);
-Repuesto** buscarRepuestosPorTexto(SistemaTaller* s, const char* subcadena, int* cantidad);
-Repuesto** listarRepuestos(SistemaTaller* s, int* cantidad);
-Resultado registrarEntradaMercancia(SistemaTaller* s, int idRepuesto, int cantidad);
-Resultado cambiarPrecioRepuesto(SistemaTaller* s, int idRepuesto, float nuevoPrecio);
-bool repuestoEnUso(SistemaTaller* s, int idRepuesto);
-Resultado eliminarRepuesto(SistemaTaller* s, int idRepuesto);
-
-OrdenServicio* abrirOrden(SistemaTaller* s, int idVehiculo, int idMecanico, int kilometraje, const char* descripcionFalla, Resultado* res);
-OrdenServicio* buscarOrdenPorID(SistemaTaller* s, int id);
-OrdenServicio* buscarOrdenAbiertaDeVehiculo(SistemaTaller* s, int idVehiculo);
-Resultado agregarRepuestoAOrden(SistemaTaller* s, int idOrden, int idRepuesto, int cantidad);
-Resultado quitarRepuestoDeOrden(SistemaTaller* s, int idOrden, int idRepuesto);
-Resultado cerrarOrden(SistemaTaller* s, int idOrden, float manoObra);
-Resultado anularOrden(SistemaTaller* s, int idOrden);
-float calcularSubtotalRepuestos(const OrdenServicio* o);
-float calcularTotalOrden(const OrdenServicio* o);
-OrdenServicio** listarOrdenes(SistemaTaller* s, int* cantidad);
-OrdenServicio** listarOrdenesPorEstado(SistemaTaller* s, const char* estado, int* cantidad);
-OrdenServicio** listarOrdenesPorVehiculo(SistemaTaller* s, int idVehiculo, int* cantidad);
-
-bool entradaTerminada();
-
-// Menus
-void menuPrincipal(SistemaTaller* s);
-void menuVehiculos(SistemaTaller* s);
-void menuMecanicos(SistemaTaller* s);
-void menuInventario(SistemaTaller* s);
-void menuOrdenes(SistemaTaller* s);
-
-// Vehiculos
-void menuRegistrarVehiculo(SistemaTaller* s);
-void menuBuscarVehiculo(SistemaTaller* s);
-void menuActualizarVehiculo(SistemaTaller* s);
-void menuEliminarVehiculo(SistemaTaller* s);
-void menuListarVehiculos(SistemaTaller* s);
-void mostrarVehiculo(Vehiculo* vehiculo);
-void mostrarListaVehiculos(Vehiculo** vehiculos, int cantidad);
-
-// Mecanicos
-void menuRegistrarMecanico(SistemaTaller* s);
-void menuBuscarMecanico(SistemaTaller* s);
-void menuListarMecanicos(SistemaTaller* s);
-void mostrarMecanico(Mecanico* mecanico, SistemaTaller* s);
-void mostrarListaMecanicos(Mecanico** mecanicos, int cantidad, SistemaTaller* s);
-
-// Repuestos
-void menuRegistrarRepuesto(SistemaTaller* s);
-void menuBuscarRepuesto(SistemaTaller* s);
-void menuEntradaMercancia(SistemaTaller* s);
-void menuCambiarPrecio(SistemaTaller* s);
-void menuEliminarRepuesto(SistemaTaller* s);
-void menuListarRepuestos(SistemaTaller* s);
-void mostrarRepuesto(Repuesto* repuesto);
-void mostrarListaRepuestos(Repuesto** repuestos, int cantidad);
-
-// ordenes
-void menuAbrirOrden(SistemaTaller* s);
-void menuAgregarRepuestoOrden(SistemaTaller* s);
-void menuQuitarRepuestoOrden(SistemaTaller* s);
-void menuCerrarOrden(SistemaTaller* s);
-void menuAnularOrden(SistemaTaller* s);
-void menuVerDetalleOrden(SistemaTaller* s);
-void menuListarOrdenes(SistemaTaller* s);
-void mostrarOrden(OrdenServicio* orden, SistemaTaller* s);
-void mostrarListaOrdenes(OrdenServicio** ordenes, int cantidad, SistemaTaller* s);
-
-static void setRes(Resultado* r, Resultado v) { if (r) *r = v; }
+ // utilidades generales
 
 static void copiar(char* dest, const char* src, int n) {
     strncpy(dest, src, n - 1);
@@ -337,6 +244,86 @@ bool contieneIgnorandoCase(const char* t, const char* sub) {
 }
 
 bool estaBajoStock(const Repuesto* r) { return r->stock <= r->stockMinimo; }
+
+// capa de persistencia
+// Lee y escribe registros crudos en archivos binarios con <fstream>.
+
+// Nombre del ultimo archivo que fallo (para que la presentacion lo informe)
+static char gArchivoConError[160] = "";
+
+static void registrarFalloArchivo(const char* ruta) {
+    strncpy(gArchivoConError, ruta, sizeof gArchivoConError - 1);
+    gArchivoConError[sizeof gArchivoConError - 1] = '\0';
+}
+
+const char* ultimoArchivoConError() { return gArchivoConError; }
+
+// posicion en bytes del registro con indice fisico i: sizeof(header) + i * sizeof(Estructura)
+static long long posicionRegistro(size_t tamRegistro, int indice) {
+    return (long long)sizeof(ArchivoHeader) + (long long)indice * (long long)tamRegistro;
+}
+
+// cantidad de registros que realmente caben en el archivo, calculada con su tamano en bytes
+static long long totalRegistrosEnStream(std::istream& f, size_t tamRegistro) {
+    f.seekg(0, std::ios::end);
+    long long tam = (long long)f.tellg();
+    if (tam < (long long)sizeof(ArchivoHeader)) return 0;
+    return (tam - (long long)sizeof(ArchivoHeader)) / (long long)tamRegistro;
+}
+
+// -1 si el archivo no se puede abrir
+int totalRegistrosEnArchivo(const char* ruta, size_t tamRegistro) {
+    std::ifstream f(ruta, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(ruta); return -1; }
+    return (int)totalRegistrosEnStream(f, tamRegistro);
+}
+
+// Operaciones sobre el header (cualquier archivo de entidades) 
+
+bool leerHeader(const char* ruta, ArchivoHeader& h) {
+    std::ifstream f(ruta, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(ruta); return false; }
+    f.seekg(0, std::ios::beg);
+    f.read(reinterpret_cast<char*>(&h), sizeof h);
+    if (!f) { registrarFalloArchivo(ruta); return false; }
+    return true;
+}
+
+// Sobrescribe unicamente el header (posicion 0); no toca los registros
+bool escribirHeader(const char* ruta, const ArchivoHeader& h) {
+    std::fstream f(ruta, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(ruta); return false; }
+    f.seekp(0, std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&h), sizeof h);
+    f.flush();
+    if (!f) { registrarFalloArchivo(ruta); return false; }
+    return true;
+}
+
+
+bool inicializarArchivo(const char* ruta) {
+    {
+        std::ifstream existente(ruta, std::ios::binary);
+        if (existente.is_open()) {
+            ArchivoHeader h;
+            existente.read(reinterpret_cast<char*>(&h), sizeof h);
+            if (!existente) { registrarFalloArchivo(ruta); return false; }
+            return true;
+        }
+    }
+    std::ofstream nuevo(ruta, std::ios::binary);
+    if (!nuevo.is_open()) { registrarFalloArchivo(ruta); return false; }
+    ArchivoHeader h;
+    h.cantidadRegistros = 0;
+    h.proximoID = 1;
+    h.registrosActivos = 0;
+    h.version = 1;
+    nuevo.write(reinterpret_cast<const char*>(&h), sizeof h);
+    nuevo.flush();
+    if (!nuevo) { registrarFalloArchivo(ruta); return false; }
+    return true;
+}
+
 
 // redimensionamiento 
 // cuando num == capacidad se reserva un arreglo del doble se copia y se libera el viejo.
