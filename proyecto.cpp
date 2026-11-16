@@ -861,168 +861,139 @@ Resultado registrarMecanico(Mecanico datos, int* idNuevo) {
     return RES_OK;
 }
 
-//capa de presentacion
-using namespace std;
-
-static bool gEOF = false;
-static bool gEco = !ES_TTY();   
-
-bool entradaTerminada() { return gEOF; }
-
-//lectura de entrada
-static void mayusculas(string& s) {
-    for (size_t i = 0; i < s.size(); i++) s[i] = (char)toupper((unsigned char)s[i]);
-}
-
-static void recortar(string& s) {
-    size_t a = 0, b = s.size();
-    while (a < b && isspace((unsigned char)s[a])) a++;
-    while (b > a && isspace((unsigned char)s[b - 1])) b--;
-    s = s.substr(a, b - a);
-}
-
-static bool igualCI(const string& a, const char* b) {
-    if (a.size() != strlen(b)) return false;
-    for (size_t i = 0; i < a.size(); i++)
-        if (toupper((unsigned char)a[i]) != toupper((unsigned char)b[i])) return false;
-    return true;
-}
-
-//devuelve false si el usuario escribe cancelar o si se acabo la entrada.
-static bool leerLinea(const char* prompt, string& out) {
-    cout << prompt << flush;
-    if (!getline(cin, out)) {
-        gEOF = true;
-        cout << "\n";
-        return false;
+// Activos y dados de baja (el campo 'eliminado' los distingue)
+Resultado listarMecanicos(Mecanico* res, int max, int* cantidad, bool* hayMas) {
+    *cantidad = 0; *hayMas = false;
+    int total = registrosFisicosMecanicos();
+    if (total < 0) return RES_ERROR_ARCHIVO;
+    Mecanico m;
+    for (int i = 1; i <= total; i++) {
+        if (leerMecanicoPorID(i, m) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (*cantidad >= max) { *hayMas = true; break; }
+        res[(*cantidad)++] = m;
     }
-    recortar(out);
-    if (gEco) cout << out << "\n";
-    if (igualCI(out, "CANCELAR")) {
-        cout << "Operacion cancelada. No se realizo ningun cambio.\n";
-        return false;
-    }
-    return true;
+    return RES_OK;
 }
 
-static bool leerTexto(const char* prompt, char* dest, int max) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        if (t.empty()) { cout << "ERROR: Este campo no puede estar vacio.\n"; continue; }
-        if ((int)t.size() >= max) {
-            cout << "ERROR: Texto demasiado largo (maximo " << max - 1 << " caracteres).\n";
-            continue;
-        }
-        strcpy(dest, t.c_str());
-        return true;
-    }
+Resultado darDeBajaMecanico(int id) {
+    Mecanico m;
+    Resultado r = obtenerMecanicoPorID(id, m);
+    if (r != RES_OK) return r;                         // no existe, ya esta de baja o error
+    int abiertas = contarOrdenesAbiertasMecanico(id);
+    if (abiertas < 0) return RES_ERROR_ARCHIVO;
+    if (abiertas > 0) return RES_MECANICO_CON_ABIERTAS;
+    if (marcarMecanicoEliminado(id) != ARCH_OK) return RES_ERROR_ARCHIVO;
+    return RES_OK;
 }
 
-static bool leerEntero(const char* prompt, int* out, long minV, long maxV) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        char* fin = nullptr;
-        long v = strtol(t.c_str(), &fin, 10);
-        if (t.empty() || *fin != '\0') {
-            cout << "ERROR: '" << t << "' no es un numero entero válido.\n";
-            continue;
-        }
-        if (v < minV || v > maxV) {
-            if (maxV >= INT_MAX) cout << "ERROR: El valor debe ser mayor o igual a " << minV << ".\n";
-            else cout << "ERROR: El valor debe estar entre " << minV << " y " << maxV << ".\n";
-            continue;
-        }
-        *out = (int)v;
-        return true;
-    }
+// REPUESTOS
+// RES_OK (activo), RES_REPUESTO_ELIMINADO ('out' igual se llena), RES_REPUESTO_NO_EXISTE, RES_ERROR_ARCHIVO
+Resultado obtenerRepuestoPorID(int id, Repuesto& out, long long* pos = nullptr) {
+    EstadoArchivo e = leerRepuestoPorID(id, out, pos);
+    if (e != ARCH_OK) return mapear(e, RES_REPUESTO_NO_EXISTE);
+    if (out.eliminado) return RES_REPUESTO_ELIMINADO;
+    return RES_OK;
 }
 
-static bool leerFloat(const char* prompt, float* out, double minV, bool estricto) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        for (size_t i = 0; i < t.size(); i++) if (t[i] == ',') t[i] = '.';
-        char* fin = nullptr;
-        double v = strtod(t.c_str(), &fin);
-        if (t.empty() || *fin != '\0') {
-            cout << "ERROR: '" << t << "' no es un número valido.\n";
-            continue;
-        }
-        if (estricto ? !(v > minV) : !(v >= minV)) {
-            cout << "ERROR: El valor debe ser " << (estricto ? "mayor que " : "mayor o igual a ") << minV << ".\n";
-            continue;
-        }
-        *out = (float)v;
-        return true;
+// Solo activos
+Resultado obtenerRepuestoPorCodigo(const char* codigo, Repuesto& out) {
+    int total = registrosFisicosRepuestos();
+    if (total < 0) return RES_ERROR_ARCHIVO;
+    Repuesto r;
+    for (int i = 1; i <= total; i++) {
+        if (leerRepuestoPorID(i, r) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (!r.eliminado && strcmp(r.codigo, codigo) == 0) { out = r; return RES_OK; }
     }
+    return RES_REPUESTO_NO_EXISTE;
 }
 
-static bool leerSN(const char* prompt, bool* resp) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        mayusculas(t);
-        if (t == "S") { *resp = true; return true; }
-        if (t == "N") { *resp = false; return true; }
-        cout << "ERROR: Responda S o N.\n";
-    }
+Resultado registrarRepuesto(Repuesto datos, int* idNuevo) {
+    aMayusculas(datos.codigo);
+    if (vacio(datos.codigo) || vacio(datos.nombre) || vacio(datos.marca) ||
+        datos.precio <= 0 || datos.stock < 0 || datos.stockMinimo < 0) return RES_DATO_INVALIDO;
+    Repuesto existente;
+    Resultado r = obtenerRepuestoPorCodigo(datos.codigo, existente);
+    if (r == RES_OK) return RES_DUPLICADO;
+    if (r != RES_REPUESTO_NO_EXISTE) return r;
+    if (guardarRepuesto(datos) != ARCH_OK) return RES_ERROR_ARCHIVO;
+    if (idNuevo) *idNuevo = datos.id;
+    return RES_OK;
 }
 
-static bool leerCedula(const char* prompt, char* dest, int max) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        mayusculas(t);
-        if (!cedulaValida(t.c_str()) || (int)t.size() >= max) {
-            cout << "ERROR: Cedula invalida. Use solo digitos (se admite prefijo V-, E- o J-).\n";
-            continue;
-        }
-        strcpy(dest, t.c_str());
-        return true;
+// Codigo o nombre parcial, sin distinguir mayusculas. Solo activos.
+Resultado buscarRepuestosPorTexto(const char* sub, Repuesto* res, int max, int* cantidad, bool* hayMas) {
+    *cantidad = 0; *hayMas = false;
+    int total = registrosFisicosRepuestos();
+    if (total < 0) return RES_ERROR_ARCHIVO;
+    Repuesto r;
+    for (int i = 1; i <= total; i++) {
+        if (leerRepuestoPorID(i, r) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (r.eliminado) continue;
+        if (!contieneIgnorandoCase(r.codigo, sub) && !contieneIgnorandoCase(r.nombre, sub)) continue;
+        if (*cantidad >= max) { *hayMas = true; break; }
+        res[(*cantidad)++] = r;
     }
+    return RES_OK;
 }
 
-static bool leerPlaca(const char* prompt, char* dest, int max) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        mayusculas(t);
-        if (!placaValida(t.c_str()) || (int)t.size() >= max) {
-            cout << "ERROR: Placa invalida. Debe ser alfanumerica de 6 o 7 caracteres.\n";
-            continue;
-        }
-        strcpy(dest, t.c_str());
-        return true;
+Resultado listarRepuestos(Repuesto* res, int max, int* cantidad, bool* hayMas) {
+    *cantidad = 0; *hayMas = false;
+    int total = registrosFisicosRepuestos();
+    if (total < 0) return RES_ERROR_ARCHIVO;
+    Repuesto r;
+    for (int i = 1; i <= total; i++) {
+        if (leerRepuestoPorID(i, r) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (r.eliminado) continue;
+        if (*cantidad >= max) { *hayMas = true; break; }
+        res[(*cantidad)++] = r;
     }
+    return RES_OK;
 }
 
-static bool leerFecha(const char* prompt, char* dest) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        if (!fechaValida(t.c_str())) {
-            cout << "ERROR: Fecha invalida. Use el formato YYYY-MM-DD con valores reales.\n";
-            continue;
-        }
-        strcpy(dest, t.c_str());
-        return true;
-    }
+Resultado registrarEntradaMercancia(int idRepuesto, int cantidad) {
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorID(idRepuesto, r);
+    if (res != RES_OK) return res;
+    if (cantidad <= 0) return RES_DATO_INVALIDO;
+    r.stock += cantidad;
+    if (sobrescribirRepuesto(r) != ARCH_OK) return RES_ERROR_ARCHIVO;
+    return RES_OK;
 }
 
-static bool leerEspecialidad(const char* prompt, char* dest, int max) {
-    string t;
-    while (true) {
-        if (!leerLinea(prompt, t)) return false;
-        mayusculas(t);
-        if (!especialidadValida(t.c_str()) || (int)t.size() >= max) {
-            cout << "ERROR: Especialidad invalida. Valores permitidos: MOTOR, FRENOS, ELECTRICIDAD, SUSPENSION, GENERAL.\n";
-            continue;
-        }
-        strcpy(dest, t.c_str());
-        return true;
+Resultado cambiarPrecioRepuesto(int idRepuesto, float nuevoPrecio) {
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorID(idRepuesto, r);
+    if (res != RES_OK) return res;
+    if (nuevoPrecio <= 0) return RES_DATO_INVALIDO;
+    r.precio = nuevoPrecio;   // las ordenes conservan su propio precioUnitario
+    if (sobrescribirRepuesto(r) != ARCH_OK) return RES_ERROR_ARCHIVO;
+    return RES_OK;
+}
+
+// *enUso = true si el repuesto aparece en el detalle de CUALQUIER orden (cualquier estado)
+Resultado repuestoEnUso(int idRepuesto, bool* enUso) {
+    *enUso = false;
+    int total = registrosFisicosOrdenes();
+    if (total < 0) return RES_ERROR_ARCHIVO;
+    OrdenServicio o;
+    for (int i = 1; i <= total; i++) {
+        if (leerOrdenPorID(i, o) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        for (int j = 0; j < o.numDetalles && j < MAX_DETALLES; j++)
+            if (o.detalles[j].idRepuesto == idRepuesto) { *enUso = true; return RES_OK; }
     }
+    return RES_OK;
+}
+
+Resultado eliminarRepuesto(int idRepuesto) {
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorID(idRepuesto, r);
+    if (res != RES_OK) return res;
+    bool enUso;
+    res = repuestoEnUso(idRepuesto, &enUso);
+    if (res != RES_OK) return res;
+    if (enUso) return RES_REPUESTO_EN_USO;
+    if (marcarRepuestoEliminado(idRepuesto) != ARCH_OK) return RES_ERROR_ARCHIVO;
+    return RES_OK;
 }
 
 static bool leerCodigo(const char* prompt, char* dest, int max) {
