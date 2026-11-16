@@ -611,117 +611,85 @@ int contarRepuestosActivos() {
     return h.registrosActivos;
 }
 
+// ordenes.bin: OrdenServicio
 
-        
-Mecanico* buscarMecanicoPorID(SistemaTaller* s, int id) {
-    for (int i = 0; i < s->numMecanicos; i++)
-        if (s->mecanicos[i].id == id) return &s->mecanicos[i];
-    return nullptr;
+int registrosFisicosOrdenes() { return totalRegistrosEnArchivo(RUTA_ORDENES, sizeof(OrdenServicio)); }
+
+// Guardar un registro nuevo: ID desde el header, escribe al final, actualiza el header
+EstadoArchivo guardarOrden(OrdenServicio& x) {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_ORDENES, h)) return ARCH_NO_ABRE;
+    time_t ahora = time(nullptr);
+    x.id = h.proximoID;
+    x.eliminado = false;
+    x.fechaCreacion = ahora;
+    x.fechaUltimaModificacion = ahora;
+    std::fstream f(RUTA_ORDENES, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_ORDENES); return ARCH_NO_ABRE; }
+    f.seekp(posicionRegistro(sizeof(OrdenServicio), h.cantidadRegistros), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(OrdenServicio));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_ORDENES); return ARCH_ERROR_IO; }
+    f.close();
+    h.cantidadRegistros++;
+    h.registrosActivos++;
+    h.proximoID++;
+    if (!escribirHeader(RUTA_ORDENES, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
 }
 
-Mecanico** listarMecanicos(SistemaTaller* s, int* cantidad) {
-    *cantidad = s->numMecanicos;
-    if (s->numMecanicos == 0) return nullptr;
-    Mecanico** r = new Mecanico*[s->numMecanicos];
-    for (int i = 0; i < s->numMecanicos; i++) r[i] = &s->mecanicos[i];
-    return r;
+// Leer por ID: posicion calculada (indice = id - 1), sin recorrer el archivo.
+//    Entrega el registro este activo o eliminado. 'posicion' (opcional) recibe el byte leido.
+EstadoArchivo leerOrdenPorID(int id, OrdenServicio& out, long long* posicion = nullptr) {
+    std::ifstream f(RUTA_ORDENES, std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_ORDENES); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(OrdenServicio));
+    if (id < 1 || id > total) return ARCH_ID_INEXISTENTE;
+    long long pos = posicionRegistro(sizeof(OrdenServicio), id - 1);
+    f.seekg(pos, std::ios::beg);
+    f.read(reinterpret_cast<char*>(&out), sizeof(OrdenServicio));
+    if (!f) { registrarFalloArchivo(RUTA_ORDENES); return ARCH_ERROR_IO; }
+    if (posicion) *posicion = pos;
+    return ARCH_OK;
 }
 
-int contarOrdenesAbiertasMecanico(SistemaTaller* s, int idMecanico) {
-    int n = 0;
-    for (int i = 0; i < s->numOrdenes; i++)
-        if (s->ordenes[i].idMecanico == idMecanico && esEstado(&s->ordenes[i], "ABIERTA")) n++;
-    return n;
+//Sobrescribir el registro en su posicion original y actualizar fechaUltimaModificacion
+EstadoArchivo sobrescribirOrden(OrdenServicio& x) {
+    std::fstream f(RUTA_ORDENES, std::ios::in | std::ios::out | std::ios::binary);
+    if (!f.is_open()) { registrarFalloArchivo(RUTA_ORDENES); return ARCH_NO_ABRE; }
+    long long total = totalRegistrosEnStream(f, sizeof(OrdenServicio));
+    if (x.id < 1 || x.id > total) return ARCH_ID_INEXISTENTE;
+    x.fechaUltimaModificacion = time(nullptr);
+    f.seekp(posicionRegistro(sizeof(OrdenServicio), x.id - 1), std::ios::beg);
+    f.write(reinterpret_cast<const char*>(&x), sizeof(OrdenServicio));
+    f.flush();
+    if (!f) { registrarFalloArchivo(RUTA_ORDENES); return ARCH_ERROR_IO; }
+    return ARCH_OK;
 }
 
-Repuesto* agregarRepuesto(SistemaTaller* s, Repuesto datos, Resultado* res) {
-    aMayusculas(datos.codigo);
-    if (vacio(datos.codigo) || vacio(datos.nombre) || vacio(datos.marca) ||
-        datos.precio <= 0 || datos.stock < 0 || datos.stockMinimo < 0) {
-        setRes(res, RES_DATO_INVALIDO);
-        return nullptr;
-    }
-    if (buscarRepuestoPorCodigo(s, datos.codigo) != nullptr) {
-        setRes(res, RES_DUPLICADO);
-        return nullptr;
-    }
-    crecerRepuestos(s);
-    datos.id = s->siguienteIdRepuesto++;
-    fechaActual(datos.fechaRegistro);
-    s->repuestos[s->numRepuestos] = datos;
-    s->numRepuestos++;
-    setRes(res, RES_OK);
-    return &s->repuestos[s->numRepuestos - 1];
+//Borrado logico: eliminado = true y registrosActivos-- en el header
+EstadoArchivo marcarOrdenEliminado(int id) {
+    OrdenServicio x;
+    EstadoArchivo e = leerOrdenPorID(id, x);
+    if (e != ARCH_OK) return e;
+    if (x.eliminado) return ARCH_YA_ELIMINADO;
+    x.eliminado = true;
+    e = sobrescribirOrden(x);
+    if (e != ARCH_OK) return e;
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_ORDENES, h)) return ARCH_NO_ABRE;
+    h.registrosActivos--;
+    if (!escribirHeader(RUTA_ORDENES, h)) return ARCH_ERROR_IO;
+    return ARCH_OK;
 }
 
-Repuesto* buscarRepuestoPorID(SistemaTaller* s, int id) {
-    for (int i = 0; i < s->numRepuestos; i++)
-        if (s->repuestos[i].id == id) return &s->repuestos[i];
-    return nullptr;
+// 5) Contar activos: lee solo el header. Retorna -1 si no se pudo leer.
+int contarOrdenesActivas() {
+    ArchivoHeader h;
+    if (!leerHeader(RUTA_ORDENES, h)) return -1;
+    return h.registrosActivos;
 }
-
-Repuesto* buscarRepuestoPorCodigo(SistemaTaller* s, const char* codigo) {
-    for (int i = 0; i < s->numRepuestos; i++)
-        if (strcmp(s->repuestos[i].codigo, codigo) == 0) return &s->repuestos[i];
-    return nullptr;
-}
-
-Repuesto** buscarRepuestosPorTexto(SistemaTaller* s, const char* sub, int* cantidad) {
-    int n = 0;
-    for (int i = 0; i < s->numRepuestos; i++)
-        if (contieneIgnorandoCase(s->repuestos[i].codigo, sub) ||
-            contieneIgnorandoCase(s->repuestos[i].nombre, sub)) n++;
-    *cantidad = n;
-    if (n == 0) return nullptr;
-    Repuesto** r = new Repuesto*[n];
-    int k = 0;
-    for (int i = 0; i < s->numRepuestos; i++)
-        if (contieneIgnorandoCase(s->repuestos[i].codigo, sub) ||
-            contieneIgnorandoCase(s->repuestos[i].nombre, sub)) r[k++] = &s->repuestos[i];
-    return r;
-}
-
-Repuesto** listarRepuestos(SistemaTaller* s, int* cantidad) {
-    *cantidad = s->numRepuestos;
-    if (s->numRepuestos == 0) return nullptr;
-    Repuesto** r = new Repuesto*[s->numRepuestos];
-    for (int i = 0; i < s->numRepuestos; i++) r[i] = &s->repuestos[i];
-    return r;
-}
-
-Resultado registrarEntradaMercancia(SistemaTaller* s, int idRepuesto, int cantidad) {
-    Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
-    if (!r) return RES_REPUESTO_NO_EXISTE;
-    if (cantidad <= 0) return RES_DATO_INVALIDO;
-    r->stock += cantidad;
-    return RES_OK;
-}
-
-Resultado cambiarPrecioRepuesto(SistemaTaller* s, int idRepuesto, float nuevoPrecio) {
-    Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
-    if (!r) return RES_REPUESTO_NO_EXISTE;
-    if (nuevoPrecio <= 0) return RES_DATO_INVALIDO;
-    r->precio = nuevoPrecio;   // las órdenes conservan su propio precioUnitario
-    return RES_OK;
-}
-
-bool repuestoEnUso(SistemaTaller* s, int idRepuesto) {
-    for (int i = 0; i < s->numOrdenes; i++)
-        for (int j = 0; j < s->ordenes[i].numDetalles; j++)
-            if (s->ordenes[i].detalles[j].idRepuesto == idRepuesto) return true;
-    return false;
-}
-
-Resultado eliminarRepuesto(SistemaTaller* s, int idRepuesto) {
-    int idx = -1;
-    for (int i = 0; i < s->numRepuestos; i++)
-        if (s->repuestos[i].id == idRepuesto) { idx = i; break; }
-    if (idx < 0) return RES_REPUESTO_NO_EXISTE;
-    if (repuestoEnUso(s, idRepuesto)) return RES_REPUESTO_EN_USO;
-    for (int i = idx; i < s->numRepuestos - 1; i++) s->repuestos[i] = s->repuestos[i + 1];
-    s->numRepuestos--;
-    return RES_OK;
-}
+ 
 
 OrdenServicio* abrirOrden(SistemaTaller* s, int idVehiculo, int idMecanico,
                           int kilometraje, const char* descripcionFalla, Resultado* res) {
