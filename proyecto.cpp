@@ -1383,68 +1383,166 @@ static bool igualCI(const string& a, const char* b) {
 }    
 
 
-
-        
-//mecanicos
-void mostrarMecanico(Mecanico* m, SistemaTaller* s) {
-    cout << "\nMecanico: " << m->nombre << " (" << m->especialidad << ")\n";
-    cout << "  Cedula        : " << m->cedula << "\n";
-    cout << "  Ingreso       : " << m->fechaIngreso << " (ID " << m->id << ")\n";
-    cout << "  Órdenes abiertas: " << contarOrdenesAbiertasMecanico(s, m->id) << "\n";
-}
-
-void mostrarListaMecanicos(Mecanico** lista, int cantidad, SistemaTaller* s) {
-    const int w[] = {6, 24, 16, 16, 13, 12};
-    cout << "\n";
-    lineaTabla("╔", "╦", "╗", w, 6);
-    cout << "║"; celda("ID", w[0]); cout << "║"; celda("Nombre", w[1]); cout << "║"; celda("Cédula", w[2]);
-    cout << "║"; celda("Especialidad", w[3]); cout << "║"; celda("Ingreso", w[4]); cout << "║"; celda("Abiertas", w[5]); cout << "║\n";
-    lineaTabla("╠", "╬", "╣", w, 6);
-    for (int i = 0; i < cantidad; i++) {
-        Mecanico* m = lista[i];
-        char b0[16], b5[16];
-        snprintf(b0, sizeof b0, "%d", m->id);
-        snprintf(b5, sizeof b5, "%d", contarOrdenesAbiertasMecanico(s, m->id));
-        cout << "║"; celda(b0, w[0]); cout << "║"; celda(m->nombre, w[1]); cout << "║"; celda(m->cedula, w[2]);
-        cout << "║"; celda(m->especialidad, w[3]); cout << "║"; celda(m->fechaIngreso, w[4]); cout << "║"; celda(b5, w[5], true); cout << "║\n";
+//devuelve false si el usuario escribe cancelar o si se acabo la entrada.
+static bool leerLinea(const char* prompt, string& out) {
+    cout << prompt << flush;
+    if (!getline(cin, out)) {
+        gEOF = true;
+        cout << "\n";
+        return false;
     }
-    lineaTabla("╚", "╩", "╝", w, 6);
-    cout << "Total de mecánicos: " << cantidad << "\n";
+    recortar(out);
+    if (gEco) cout << out << "\n";
+    if (igualCI(out, "CANCELAR")) {
+        cout << "Operacion cancelada. No se realizo ningun cambio.\n";
+        return false;
+    }
+    return true;
 }
 
-void menuRegistrarMecanico(SistemaTaller* s) {
-    cout << "\n--- REGISTRAR MECANICO (escriba CANCELAR para abortar) ---\n";
-    Mecanico d;
-    memset(&d, 0, sizeof d);
-    if (!leerTexto("Nombre completo: ", d.nombre, sizeof d.nombre)) return;
-    if (!leerCedula("Cedula: ", d.cedula, sizeof d.cedula)) return;
-    if (!leerEspecialidad("Especialidad (MOTOR/FRENOS/ELECTRICIDAD/SUSPENSION/GENERAL): ", d.especialidad, sizeof d.especialidad)) return;
-    if (!leerFecha("Fecha de ingreso (YYYY-MM-DD): ", d.fechaIngreso)) return;
-    bool ok;
-    if (!leerSN("Confirmar el registro? (S/N): ", &ok)) return;
-    if (!ok) { cout << "Registro descartado.\n"; return; }
-    Resultado res;
-    Mecanico* m = agregarMecanico(s, d, &res);
-    if (m) cout << "Mecanico '" << m->nombre << "' (" << m->especialidad << ") registrado correctamente.\n";
-    else if (res == RES_DUPLICADO) cout << "ERROR: La cedula '" << d.cedula << "' ya está registrada para otro mecanico.\n";
-    else mostrarError(res, s, 0, 0, 0, 0, 0, 0);
+static bool leerTexto(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        if (t.empty()) { cout << "ERROR: Este campo no puede estar vacio.\n"; continue; }
+        if ((int)t.size() >= max) {
+            cout << "ERROR: Texto demasiado largo (maximo " << max - 1 << " caracteres).\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
 }
 
-void menuBuscarMecanico(SistemaTaller* s) {
-    int id;
-    if (!leerEntero("ID del mecanico: ", &id, 1, INT_MAX)) return;
-    Mecanico* m = buscarMecanicoPorID(s, id);
-    if (m) mostrarMecanico(m, s);
-    else cout << "ERROR: No existe un mecanico con ID " << id << ".\n";
+static bool leerEntero(const char* prompt, int* out, long minV, long maxV) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        char* fin = nullptr;
+        long v = strtol(t.c_str(), &fin, 10);
+        if (t.empty() || *fin != '\0') {
+            cout << "ERROR: '" << t << "' no es un numero entero válido.\n";
+            continue;
+        }
+        if (v < minV || v > maxV) {
+            if (maxV >= INT_MAX) cout << "ERROR: El valor debe ser mayor o igual a " << minV << ".\n";
+            else cout << "ERROR: El valor debe estar entre " << minV << " y " << maxV << ".\n";
+            continue;
+        }
+        *out = (int)v;
+        return true;
+    }
 }
 
-void menuListarMecanicos(SistemaTaller* s) {
-    int n;
-    Mecanico** lista = listarMecanicos(s, &n);
-    if (n == 0) cout << "No hay mecanicos registrados.\n";
-    else mostrarListaMecanicos(lista, n, s);
-    delete[] lista;
+static bool leerFloat(const char* prompt, float* out, double minV, bool estricto) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        for (size_t i = 0; i < t.size(); i++) if (t[i] == ',') t[i] = '.';
+        char* fin = nullptr;
+        double v = strtod(t.c_str(), &fin);
+        if (t.empty() || *fin != '\0') {
+            cout << "ERROR: '" << t << "' no es un número valido.\n";
+            continue;
+        }
+        if (estricto ? !(v > minV) : !(v >= minV)) {
+            cout << "ERROR: El valor debe ser " << (estricto ? "mayor que " : "mayor o igual a ") << minV << ".\n";
+            continue;
+        }
+        *out = (float)v;
+        return true;
+    }
 }
+
+static bool leerSN(const char* prompt, bool* resp) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (t == "S") { *resp = true; return true; }
+        if (t == "N") { *resp = false; return true; }
+        cout << "ERROR: Responda S o N.\n";
+    }
+}
+
+static bool leerCedula(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (!cedulaValida(t.c_str()) || (int)t.size() >= max) {
+            cout << "ERROR: Cedula invalida. Use solo digitos (se admite prefijo V-, E- o J-).\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerPlaca(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (!placaValida(t.c_str()) || (int)t.size() >= max) {
+            cout << "ERROR: Placa invalida. Debe ser alfanumerica de 6 o 7 caracteres.\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerFecha(const char* prompt, char* dest) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        if (!fechaValida(t.c_str())) {
+            cout << "ERROR: Fecha invalida. Use el formato YYYY-MM-DD con valores reales.\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerEspecialidad(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (!especialidadValida(t.c_str()) || (int)t.size() >= max) {
+            cout << "ERROR: Especialidad invalida. Valores permitidos: MOTOR, FRENOS, ELECTRICIDAD, SUSPENSION, GENERAL.\n";
+            continue;
+        }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerCodigo(const char* prompt, char* dest, int max) {
+    string t;
+    while (true) {
+        if (!leerLinea(prompt, t)) return false;
+        mayusculas(t);
+        if (t.empty()) { cout << "ERROR: Este campo no puede estar vacio.\n"; continue; }
+        if ((int)t.size() >= max) { cout << "ERROR: Codigo demasiado largo.\n"; continue; }
+        strcpy(dest, t.c_str());
+        return true;
+    }
+}
+
+static bool leerOpcion(int* op, int maxOp) {
+    return leerEntero("Seleccione una opcion: ", op, 0, maxOp);
+}
+
+static int largoUtf8(const char* s) {
+    int n = 0;
+    for (; *s; ++s) if (((unsigned char)*s & 0xC0) != 0x80) n++;
+    return n;
+}
+
+
 
 void menuMecanicos(SistemaTaller* s) {
     const char* items[] = {"1. Registrar mecanico", "2. Buscar mecanico por ID", "3. Listar mecanicos",
