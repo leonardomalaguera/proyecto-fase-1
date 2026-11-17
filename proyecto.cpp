@@ -1165,57 +1165,111 @@ Resultado listarOrdenesPorVehiculo(int idVehiculo, OrdenServicio* res, int max, 
     return listarOrdenesFiltrado(2, nullptr, idVehiculo, res, max, cantidad, hayMas);
 }
 
-        
-void menuRegistrarVehiculo(SistemaTaller* s) {
-    cout << "\n--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---\n";
-    Vehiculo d;
-    memset(&d, 0, sizeof d);
-    if (!leerPlaca("Placa: ", d.placa, sizeof d.placa)) return;
-    if (buscarVehiculoPorPlaca(s, d.placa)) {
-        cout << "ERROR: La placa '" << d.placa << "' ya esta registrada.\n";
-        return;
-    }
-    if (!leerTexto("Marca: ", d.marca, sizeof d.marca)) return;
-    if (!leerTexto("Modelo: ", d.modelo, sizeof d.modelo)) return;
-    if (!leerEntero("Año (1950-2027): ", &d.anio, 1950, 2027)) return;
-    if (!leerEntero("Kilometraje: ", &d.kilometraje, 0, INT_MAX)) return;
-    if (!leerTexto("Nombre del propietario: ", d.nombrePropietario, sizeof d.nombrePropietario)) return;
-    if (!leerCedula("Cedula del propietario: ", d.cedulaPropietario, sizeof d.cedulaPropietario)) return;
-    if (!leerTexto("Telefono del propietario: ", d.telefonoPropietario, sizeof d.telefonoPropietario)) return;
-    bool ok;
-    if (!leerSN("Confirmar el registro (S/N): ", &ok)) return;
-    if (!ok) { cout << "Registro descartado.\n"; return; }
-    Vehiculo* v = agregarVehiculo(s, d);
-    if (!v) cout << "ERROR: No se pudo registrar el vehiculo '" << d.placa << "' (datos invalidos).\n";
-    else cout << "Vehiculo '" << v->placa << "' (" << v->marca << " " << v->modelo << ") registrado correctamente.\n";
+// MANTENIMIENTO: verificacion de integridad y respaldo
+
+static void agregarProblema(ReporteIntegridad& rep, const char* fmt, ...) {
+    rep.problemas++;
+    if (rep.mensajesGuardados >= MAX_PROBLEMAS) return;
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(rep.mensajes[rep.mensajesGuardados], sizeof rep.mensajes[0], fmt, ap);
+    va_end(ap);
+    rep.mensajesGuardados++;
 }
 
-void menuBuscarVehiculo(SistemaTaller* s) {
-    cout << "\nBuscar por: 1. Placa   2. Propietario   3. ID\n";
-    int modo;
-    if (!leerEntero("Seleccione: ", &modo, 1, 3)) return;
-    if (modo == 1) {
-        char placa[10];
-        if (!leerPlaca("Placa exacta: ", placa, sizeof placa)) return;
-        Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
-        if (v) mostrarVehiculo(v);
-        else cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n";
-    } else if (modo == 2) {
-        char sub[100];
-        if (!leerTexto("Nombre del propietario (parcial): ", sub, sizeof sub)) return;
-        int n;
-        Vehiculo** r = buscarVehiculosPorPropietario(s, sub, &n);
-        if (n == 0) cout << "No hay vehiculos cuyo propietario contenga '" << sub << "'.\n";
-        else mostrarListaVehiculos(r, n);
-        delete[] r;   // solo el arreglo de punteros
-    } else {
-        int id;
-        if (!leerEntero("ID del vehiculo: ", &id, 1, INT_MAX)) return;
-        Vehiculo* v = buscarVehiculoPorID(s, id);
-        if (v) mostrarVehiculo(v);
-        else cout << "ERROR: No existe un vehiulo con ID " << id << ".\n";
-    }
+static const char* nombreArchivo(const char* ruta) { return ruta + strlen(DIR_DATOS) + 1; }
+
+// e) el header debe coincidir con el contenido real del archivo
+static bool verificarHeader(ReporteIntegridad& rep, const char* ruta, int reales, int activosReales) {
+    ArchivoHeader h;
+    if (!leerHeader(ruta, h)) return false;
+    if (h.cantidadRegistros != reales)
+        agregarProblema(rep, "Header de %s indica %d registros; el archivo contiene %d",
+                        nombreArchivo(ruta), h.cantidadRegistros, reales);
+    if (h.registrosActivos != activosReales)
+        agregarProblema(rep, "Header de %s indica %d registros activos; se contaron %d",
+                        nombreArchivo(ruta), h.registrosActivos, activosReales);
+    return true;
 }
+
+Resultado verificarIntegridad(ReporteIntegridad& rep) {
+    memset(&rep, 0, sizeof rep);
+    int nV = registrosFisicosVehiculos(), nM = registrosFisicosMecanicos();
+    int nR = registrosFisicosRepuestos(), nO = registrosFisicosOrdenes();
+    if (nV < 0 || nM < 0 || nR < 0 || nO < 0) return RES_ERROR_ARCHIVO;
+
+    int activos = 0;
+    Vehiculo v;
+    for (int i = 1; i <= nV; i++) {
+        if (leerVehiculoPorID(i, v) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (v.id != i) agregarProblema(rep, "vehiculos.bin: el registro en la posicion %d tiene ID %d (se esperaba %d)", i - 1, v.id, i);
+        if (!v.eliminado) activos++;
+    }
+    rep.vehiculos = nV;
+    if (!verificarHeader(rep, RUTA_VEHICULOS, nV, activos)) return RES_ERROR_ARCHIVO;
+
+    activos = 0;
+    Mecanico m;
+    for (int i = 1; i <= nM; i++) {
+        if (leerMecanicoPorID(i, m) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (m.id != i) agregarProblema(rep, "mecanicos.bin: el registro en la posicion %d tiene ID %d (se esperaba %d)", i - 1, m.id, i);
+        if (!m.eliminado) activos++;
+    }
+    rep.mecanicos = nM;
+    if (!verificarHeader(rep, RUTA_MECANICOS, nM, activos)) return RES_ERROR_ARCHIVO;
+
+    activos = 0;
+    Repuesto rp;
+    for (int i = 1; i <= nR; i++) {
+        if (leerRepuestoPorID(i, rp) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (rp.id != i) agregarProblema(rep, "repuestos.bin: el registro en la posicion %d tiene ID %d (se esperaba %d)", i - 1, rp.id, i);
+        if (!rp.eliminado) activos++;
+        if (rp.stock < 0)                                                                    // d)
+            agregarProblema(rep, "Repuesto %s (%s) tiene stock negativo: %d", rp.codigo, rp.nombre, rp.stock);
+    }
+    rep.repuestos = nR;
+    if (!verificarHeader(rep, RUTA_REPUESTOS, nR, activos)) return RES_ERROR_ARCHIVO;
+
+    activos = 0;
+    OrdenServicio o;
+    for (int i = 1; i <= nO; i++) {
+        if (leerOrdenPorID(i, o) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (o.id != i) agregarProblema(rep, "ordenes.bin: el registro en la posicion %d tiene ID %d (se esperaba %d)", i - 1, o.id, i);
+        if (!o.eliminado) activos++;
+        bool abierta = esEstado(&o, "ABIERTA");
+
+        EstadoArchivo e = leerVehiculoPorID(o.idVehiculo, v);                                // a) y b)
+        if (e == ARCH_ID_INEXISTENTE)
+            agregarProblema(rep, "Orden #%d apunta al vehiculo ID %d (no existe en vehiculos.bin)", o.id, o.idVehiculo);
+        else if (e != ARCH_OK) return RES_ERROR_ARCHIVO;
+        else if (abierta && v.eliminado)
+            agregarProblema(rep, "Orden #%d ABIERTA apunta al vehiculo %s que esta eliminado", o.id, v.placa);
+
+        e = leerMecanicoPorID(o.idMecanico, m);
+        if (e == ARCH_ID_INEXISTENTE)
+            agregarProblema(rep, "Orden #%d apunta al mecanico ID %d (no existe en mecanicos.bin)", o.id, o.idMecanico);
+        else if (e != ARCH_OK) return RES_ERROR_ARCHIVO;
+        else if (abierta && m.eliminado)      // en ordenes CERRADAS o ANULADAS un mecanico de baja es valido
+            agregarProblema(rep, "Orden #%d ABIERTA apunta al mecanico %s que esta dado de baja", o.id, m.nombre);
+
+        if (o.numDetalles < 0 || o.numDetalles > MAX_DETALLES) {
+            agregarProblema(rep, "Orden #%d tiene un numero de lineas invalido: %d", o.id, o.numDetalles);
+            continue;
+        }
+        for (int j = 0; j < o.numDetalles; j++) {                                            // c)
+            e = leerRepuestoPorID(o.detalles[j].idRepuesto, rp);
+            if (e == ARCH_ID_INEXISTENTE)
+                agregarProblema(rep, "Orden #%d, linea %d: el repuesto ID %d no existe en repuestos.bin",
+                                o.id, j + 1, o.detalles[j].idRepuesto);
+            else if (e != ARCH_OK) return RES_ERROR_ARCHIVO;
+        }
+    }
+    rep.ordenes = nO;
+    if (!verificarHeader(rep, RUTA_ORDENES, nO, activos)) return RES_ERROR_ARCHIVO;
+    return RES_OK;
+}
+
+
 
 void menuActualizarVehiculo(SistemaTaller* s) {
     cout << "\n--- ACTUALIZAR VEHICULO (escriba CANCELAR para abortar) ---\n";
