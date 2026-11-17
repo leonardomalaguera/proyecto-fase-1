@@ -1269,79 +1269,122 @@ Resultado verificarIntegridad(ReporteIntegridad& rep) {
     return RES_OK;
 }
 
-
-
-void menuActualizarVehiculo(SistemaTaller* s) {
-    cout << "\n--- ACTUALIZAR VEHICULO (escriba CANCELAR para abortar) ---\n";
-    char placa[10];
-    if (!leerPlaca("Placa del vehiculo a actualizar: ", placa, sizeof placa)) return;
-    Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
-    if (!v) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
-    mostrarVehiculo(v);
-    cout << "(La placa, el kilometraje y la fecha de registro no se modifican)\n";
-    Vehiculo d;
-    memset(&d, 0, sizeof d);
-    if (!leerTexto("Nueva marca: ", d.marca, sizeof d.marca)) return;
-    if (!leerTexto("Nuevo modelo: ", d.modelo, sizeof d.modelo)) return;
-    if (!leerEntero("Nuevo ano (1950-2027): ", &d.anio, 1950, 2027)) return;
-    if (!leerTexto("Nuevo nombre del propietario: ", d.nombrePropietario, sizeof d.nombrePropietario)) return;
-    if (!leerCedula("Nueva cedula del propietario: ", d.cedulaPropietario, sizeof d.cedulaPropietario)) return;
-    if (!leerTexto("Nuevo telefono del propietario: ", d.telefonoPropietario, sizeof d.telefonoPropietario)) return;
-    bool ok;
-    if (!leerSN("Confirmar la actualizacion (S/N): ", &ok)) return;
-    if (!ok) { cout << "Actualizacion descartada.\n"; return; }
-    if (actualizarVehiculo(s, v->id, d)) cout << "Vehiculo '" << placa << "' actualizado correctamente.\n";
-    else cout << "ERROR: No se pudo actualizar el vehiculo '" << placa << "'.\n";
-}
-
-void menuEliminarVehiculo(SistemaTaller* s) {
-    cout << "\n--- ELIMINAR VEHICULO (escriba CANCELAR para abortar) ---\n";
-    char placa[10];
-    if (!leerPlaca("Placa del vehiculo a eliminar: ", placa, sizeof placa)) return;
-    Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
-    if (!v) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
-    int n = contarOrdenesVehiculo(s, v->id);
-    if (n > 0) {
-        cout << "ERROR: El vehiculo '" << placa << "' tiene " << n
-             << (n == 1 ? " orden registrada" : " ordenes registradas") << " y no puede eliminarse.\n";
-        return;
+Resultado crearBackup(char* rutaOut, int tam) {
+    time_t t = time(nullptr);
+    struct tm* l = localtime(&t);
+    char carpeta[64];
+    strftime(carpeta, sizeof carpeta, "backup_%Y-%m-%d_%H-%M", l);
+    if (!crearCarpeta(carpeta)) return RES_ERROR_ARCHIVO;
+    const char* archivos[] = {RUTA_TALLER, RUTA_VEHICULOS, RUTA_MECANICOS, RUTA_REPUESTOS, RUTA_ORDENES};
+    for (int i = 0; i < 5; i++) {
+        char destino[200];
+        snprintf(destino, sizeof destino, "%s/%s", carpeta, nombreArchivo(archivos[i]));
+        if (!copiarArchivoBinario(archivos[i], destino)) return RES_ERROR_ARCHIVO;
     }
-    bool ok;
-    if (!leerSN("Confirmar la eliminacion (S/N): ", &ok)) return;
-    if (!ok) { cout << "Eliminacion descartada.\n"; return; }
-    if (eliminarVehiculo(s, v->id)) cout << "Vehiculo '" << placa << "' eliminado.\n";
-    else cout << "ERROR: No se pudo eliminar el vehiculo '" << placa << "'.\n";
+    copiar(rutaOut, carpeta, tam);
+    return RES_OK;
 }
 
-void menuListarVehiculos(SistemaTaller* s) {
-    int n;
-    Vehiculo** lista = listarVehiculos(s, &n);
-    if (n == 0) cout << "No hay vehiculos registrados.\n";
-    else {
-        mostrarListaVehiculos(lista, n);
-        cout << "(Capacidad actual del arreglo de vehiculos: " << s->capacidadVehiculos << ")\n";
+// Reporte 1: datos del vehiculo, sus ordenes y total facturado en ordenes cerradas.
+Resultado reporteHistorialVehiculo(const char* placa, Vehiculo& veh, OrdenServicio* ordenes, int max,
+                                   int* cantidad, bool* hayMas, float* totalFacturado) {
+    *cantidad = 0; *hayMas = false; *totalFacturado = 0;
+    Resultado r = obtenerVehiculoPorPlaca(placa, veh);
+    if (r != RES_OK) return r;
+    int total = registrosFisicosOrdenes();
+    if (total < 0) return RES_ERROR_ARCHIVO;
+    OrdenServicio o;
+    for (int i = 1; i <= total; i++) {
+        if (leerOrdenPorID(i, o) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        if (o.idVehiculo != veh.id) continue;
+        if (esEstado(&o, "CERRADA")) *totalFacturado += calcularTotalOrden(&o);
+        if (*cantidad < max) ordenes[(*cantidad)++] = o; else *hayMas = true;
     }
-    delete[] lista;
+    return RES_OK;
 }
 
-void menuVehiculos(SistemaTaller* s) {
-    const char* items[] = {"1. Registrar vehiculo", "2. Buscar vehiculo", "3. Actualizar vehiculo",
-                           "4. Eliminar vehiculo", "5. Listar vehiculos", "0. Volver al menu principal"};
-    while (!gEOF) {
-        cout << "\n";
-        caja("GESTION DE VEHICULOS", nullptr, items, 6);
-        int op;
-        if (!leerOpcion(&op, 5)) continue;
-        switch (op) {
-            case 1: menuRegistrarVehiculo(s); break;
-            case 2: menuBuscarVehiculo(s); break;
-            case 3: menuActualizarVehiculo(s); break;
-            case 4: menuEliminarVehiculo(s); break;
-            case 5: menuListarVehiculos(s); break;
-            case 0: return;
+// Reporte 2: los TOP_REPUESTOS repuestos con mas unidades en ordenes cerradas.
+Resultado reporteRepuestosMasUsados(FilaUsoRepuesto* filas, int* cantidad) {
+    *cantidad = 0;
+    int nRep = registrosFisicosRepuestos();
+    int nOrd = registrosFisicosOrdenes();
+    if (nRep < 0 || nOrd < 0) return RES_ERROR_ARCHIVO;
+    int* usos = new int[nRep + 1]();
+    OrdenServicio o;
+    for (int i = 1; i <= nOrd; i++) {
+        if (leerOrdenPorID(i, o) != ARCH_OK) { delete[] usos; return RES_ERROR_ARCHIVO; }
+        if (!esEstado(&o, "CERRADA")) continue;
+        for (int j = 0; j < o.numDetalles && j < MAX_DETALLES; j++) {
+            int id = o.detalles[j].idRepuesto;
+            if (id >= 1 && id <= nRep) usos[id] += o.detalles[j].cantidad;
         }
     }
+    for (int k = 0; k < TOP_REPUESTOS; k++) {
+        int mejor = 0;
+        for (int id = 1; id <= nRep; id++) if (usos[id] > 0 && (mejor == 0 || usos[id] > usos[mejor])) mejor = id;
+        if (mejor == 0) break;
+        filas[*cantidad].idRepuesto = mejor;
+        filas[*cantidad].unidades = usos[mejor];
+        (*cantidad)++;
+        usos[mejor] = 0;                               // ya fue elegido
+    }
+    delete[] usos;
+    return RES_OK;
 }
+
+// Reporte 3: por cada mecanico (activos y de baja), ordenes cerradas, mano de obra y repuestos.
+Resultado reporteFacturacionMecanicos(FilaFacturacion* filas, int max, int* cantidad, bool* hayMas) {
+    *cantidad = 0; *hayMas = false;
+    int nMec = registrosFisicosMecanicos();
+    int nOrd = registrosFisicosOrdenes();
+    if (nMec < 0 || nOrd < 0) return RES_ERROR_ARCHIVO;
+    for (int i = 1; i <= nMec; i++) {
+        if (*cantidad >= max) { *hayMas = true; break; }
+        FilaFacturacion f;
+        memset(&f, 0, sizeof f);
+        if (leerMecanicoPorID(i, f.mecanico) != ARCH_OK) return RES_ERROR_ARCHIVO;
+        OrdenServicio o;
+        for (int j = 1; j <= nOrd; j++) {
+            if (leerOrdenPorID(j, o) != ARCH_OK) return RES_ERROR_ARCHIVO;
+            if (o.idMecanico != f.mecanico.id || !esEstado(&o, "CERRADA")) continue;
+            f.ordenesCerradas++;
+            f.manoObra += o.manoObra;
+            f.repuestos += calcularSubtotalRepuestos(&o);
+        }
+        filas[(*cantidad)++] = f;
+    }
+    return RES_OK;
+}
+
+using namespace std;
+
+static bool gEOF = false;
+static bool gEco = !ES_TTY();
+
+bool entradaTerminada() { return gEOF; }
+
+//lectura de entrada
+static void mayusculas(string& s) {
+    for (size_t i = 0; i < s.size(); i++) s[i] = (char)toupper((unsigned char)s[i]);
+}
+
+static void recortar(string& s) {
+    size_t a = 0, b = s.size();
+    while (a < b && isspace((unsigned char)s[a])) a++;
+    while (b > a && isspace((unsigned char)s[b - 1])) b--;
+    s = s.substr(a, b - a);
+}
+
+static bool igualCI(const string& a, const char* b) {
+    if (a.size() != strlen(b)) return false;
+    for (size_t i = 0; i < a.size(); i++)
+        if (toupper((unsigned char)a[i]) != toupper((unsigned char)b[i])) return false;
+    return true;
+}    
+
+
+
+        
 //mecanicos
 void mostrarMecanico(Mecanico* m, SistemaTaller* s) {
     cout << "\nMecanico: " << m->nombre << " (" << m->especialidad << ")\n";
