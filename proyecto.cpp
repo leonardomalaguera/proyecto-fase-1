@@ -1876,7 +1876,119 @@ void menuVehiculos() {
         }
     }
 }
-        
+
+
+// MECANICOS 
+    void mostrarMecanico(const Mecanico& m) {
+    int abiertas = contarOrdenesAbiertasMecanico(m.id);
+    cout << "\nMecanico: " << m.nombre << " (" << m.especialidad << ")" << (m.eliminado ? "  *** DADO DE BAJA ***" : "") << "\n";
+    cout << "  Cedula        : " << m.cedula << "\n";
+    cout << "  Ingreso       : " << m.fechaIngreso << " (ID " << m.id << ")\n";
+    cout << "  Órdenes abiertas: " << (abiertas < 0 ? 0 : abiertas) << "\n";
+}
+
+void mostrarListaMecanicos(const Mecanico* lista, int cantidad) {
+    const int w[] = {6, 24, 16, 16, 13, 10, 10};
+    cout << "\n";
+    lineaTabla("+", "+", "+", w, 7);
+    cout << "|"; celda("ID", w[0]); cout << "|"; celda("Nombre", w[1]); cout << "|"; celda("Cédula", w[2]);
+    cout << "|"; celda("Especialidad", w[3]); cout << "|"; celda("Ingreso", w[4]); cout << "|"; celda("Abiertas", w[5]);
+    cout << "|"; celda("Estado", w[6]); cout << "|\n";
+    lineaTabla("+", "+", "+", w, 7);
+    for (int i = 0; i < cantidad; i++) {
+        const Mecanico& m = lista[i];
+        char b0[16], b5[16];
+        int abiertas = contarOrdenesAbiertasMecanico(m.id);
+        snprintf(b0, sizeof b0, "%d", m.id);
+        snprintf(b5, sizeof b5, "%d", abiertas < 0 ? 0 : abiertas);
+        cout << "|"; celda(b0, w[0]); cout << "|"; celda(m.nombre, w[1]); cout << "|"; celda(m.cedula, w[2]);
+        cout << "|"; celda(m.especialidad, w[3]); cout << "|"; celda(m.fechaIngreso, w[4]); cout << "|"; celda(b5, w[5], true);
+        cout << "|"; celda(m.eliminado ? "BAJA" : "ACTIVO", w[6]); cout << "|\n";
+    }
+    lineaTabla("+", "+", "+", w, 7);
+    cout << "Total de mecánicos mostrados: " << cantidad << "\n";
+}
+
+void menuRegistrarMecanico() {
+    cout << "\n--- REGISTRAR MECANICO (escriba CANCELAR para abortar) ---\n";
+    Mecanico d;
+    memset(&d, 0, sizeof d);
+    if (!leerTexto("Nombre completo: ", d.nombre, sizeof d.nombre)) return;
+    if (!leerCedula("Cedula: ", d.cedula, sizeof d.cedula)) return;
+    if (!leerEspecialidad("Especialidad (MOTOR/FRENOS/ELECTRICIDAD/SUSPENSION/GENERAL): ", d.especialidad, sizeof d.especialidad)) return;
+    if (!leerFecha("Fecha de ingreso (YYYY-MM-DD): ", d.fechaIngreso)) return;
+    bool ok;
+    if (!leerSN("Confirmar el registro? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Registro descartado.\n"; return; }
+    int idNuevo = 0;
+    Resultado res = registrarMecanico(d, &idNuevo);
+    if (res == RES_OK) cout << "Mecanico '" << d.nombre << "' (" << d.especialidad << ") registrado correctamente (ID " << idNuevo << ").\n";
+    else if (res == RES_DUPLICADO) cout << "ERROR: La cedula '" << d.cedula << "' ya está registrada para otro mecanico.\n";
+    else mostrarError(res, 0, 0, 0, 0, 0, 0);
+}
+
+void menuBuscarMecanico() {
+    int id;
+    if (!leerEntero("ID del mecanico: ", &id, 1, INT_MAX)) return;
+    Mecanico m;
+    Resultado r = obtenerMecanicoPorID(id, m);
+    if (r == RES_OK || r == RES_MECANICO_DADO_BAJA) mostrarMecanico(m);
+    else if (r == RES_MECANICO_NO_EXISTE) cout << "ERROR: No existe un mecanico con ID " << id << ".\n";
+    else mostrarError(r, 0, 0, 0, 0, 0, 0);
+}
+
+void menuListarMecanicos() {
+    Mecanico lista[MAX_RESULTADOS];
+    int n;
+    bool hayMas;
+    Resultado r = listarMecanicos(lista, MAX_RESULTADOS, &n, &hayMas);
+    if (r != RES_OK) { mostrarError(r, 0, 0, 0, 0, 0, 0); return; }
+    if (n == 0) cout << "No hay mecanicos registrados.\n";
+    else { mostrarListaMecanicos(lista, n); avisarSiHayMas(hayMas); }
+}
+
+void menuDarBajaMecanico() {
+    cout << "\n--- DAR DE BAJA MECANICO (escriba CANCELAR para abortar) ---\n";
+    Mecanico lista[MAX_RESULTADOS];
+    int n;
+    bool hayMas;
+    Resultado r = listarMecanicos(lista, MAX_RESULTADOS, &n, &hayMas);
+    if (r != RES_OK) { mostrarError(r, 0, 0, 0, 0, 0, 0); return; }
+    if (n == 0) { cout << "No hay mecanicos registrados.\n"; return; }
+    mostrarListaMecanicos(lista, n);
+    avisarSiHayMas(hayMas);
+    int id;
+    if (!leerEntero("ID del mecanico a dar de baja (segun la lista): ", &id, 1, INT_MAX)) return;
+    Mecanico m;
+    r = obtenerMecanicoPorID(id, m);
+    if (r == RES_MECANICO_NO_EXISTE) { cout << "ERROR: No existe un mecanico con ID " << id << ".\n"; return; }
+    if (r == RES_MECANICO_DADO_BAJA) { cout << "ERROR: El mecanico '" << m.nombre << "' ya estaba dado de baja.\n"; return; }
+    if (r != RES_OK) { mostrarError(r, 0, 0, 0, 0, 0, 0); return; }
+    bool ok;
+    if (!leerSN("Confirmar la baja del mecanico? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Baja descartada.\n"; return; }
+    r = darDeBajaMecanico(id);
+    if (r == RES_OK) cout << "Mecanico '" << m.nombre << "' dado de baja. Su historial de ordenes se conserva.\n";
+    else mostrarError(r, 0, 0, id, 0, 0, 0);
+}
+
+void menuMecanicos() {
+    const char* items[] = {"1. Registrar mecanico", "2. Buscar mecanico por ID", "3. Listar mecanicos",
+                           "4. Dar de baja mecanico", "0. Volver al menu principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("GESTION DE MECANICOS", nullptr, items, 5);
+        int op;
+        if (!leerOpcion(&op, 4)) continue;
+        switch (op) {
+            case 1: menuRegistrarMecanico(); break;
+            case 2: menuBuscarMecanico(); break;
+            case 3: menuListarMecanicos(); break;
+            case 4: menuDarBajaMecanico(); break;
+            case 0: return;
+        }
+    }
+}
 void menuEntradaMercancia(SistemaTaller* s) {
     cout << "\n--- ENTRADA DE MERCANCÍA (escriba CANCELAR para abortar) ---\n";
     char cod[20];
@@ -1960,6 +2072,7 @@ void menuInventario(SistemaTaller* s) {
     }
 }
 
+        
 void mostrarOrden(OrdenServicio* o, SistemaTaller* s) {
     const int W1 = 10, W2 = 25, W3 = 6, W4 = 10, W5 = 12;
     const int INNER = W1 + W2 + W3 + W4 + W5 + 4;   // ancho interior de la caja
