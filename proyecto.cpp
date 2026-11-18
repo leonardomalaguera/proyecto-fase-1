@@ -2072,7 +2072,190 @@ void menuInventario(SistemaTaller* s) {
     }
 }
 
-        
+//REPUESTOS
+void mostrarRepuesto(const Repuesto& r) {
+    char fecha[24];
+    fmtFechaHora(fecha, sizeof fecha, r.fechaCreacion);
+    cout << "\nRepuesto: " << r.codigo << " - " << r.nombre << " (" << r.marca << ")\n";
+    cout << "  Precio vigente : " << fixed;
+    cout.precision(2);
+    cout << r.precio << "\n";
+    cout << "  Stock          : " << r.stock << " (minimo: " << r.stockMinimo << ")"
+         << (estaBajoStock(&r) ? "  *** BAJO STOCK ***" : "") << "\n";
+    cout << "  Registrado     : " << fecha << " (ID " << r.id << ")\n";
+}
+
+void mostrarListaRepuestos(const Repuesto* lista, int cantidad) {
+    const int w[] = {6, 11, 26, 12, 10, 8, 7, 14};
+    cout << "\n";
+    lineaTabla("+", "+", "+", w, 8);
+    cout << "|"; celda("ID", w[0]); cout << "|"; celda("Codigo", w[1]); cout << "|"; celda("Nombre", w[2]);
+    cout << "|"; celda("Marca", w[3]); cout << "|"; celda("Precio", w[4]); cout << "|"; celda("Stock", w[5]);
+    cout << "|"; celda("Mín", w[6]); cout << "|"; celda("Estado", w[7]); cout << "|\n";
+    lineaTabla("+", "+", "+", w, 8);
+    for (int i = 0; i < cantidad; i++) {
+        const Repuesto& r = lista[i];
+        char b0[16], b4[24], b5[16], b6[16];
+        snprintf(b0, sizeof b0, "%d", r.id);
+        fmtMoneda(b4, sizeof b4, r.precio);
+        snprintf(b5, sizeof b5, "%d", r.stock);
+        snprintf(b6, sizeof b6, "%d", r.stockMinimo);
+        cout << "|"; celda(b0, w[0]); cout << "|"; celda(r.codigo, w[1]); cout << "|"; celda(r.nombre, w[2]);
+        cout << "|"; celda(r.marca, w[3]); cout << "|"; celda(b4, w[4], true); cout << "|"; celda(b5, w[5], true);
+        cout << "|"; celda(b6, w[6], true); cout << "|"; celda(estaBajoStock(&r) ? "BAJO STOCK" : "OK", w[7]); cout << "|\n";
+    }
+    lineaTabla("+", "+", "+", w, 8);
+    cout << "Total de repuestos mostrados: " << cantidad << "\n";
+}
+
+void menuRegistrarRepuesto() {
+    cout << "\n--- REGISTRAR REPUESTO (escriba CANCELAR para abortar) ---\n";
+    Repuesto d;
+    memset(&d, 0, sizeof d);
+    if (!leerCodigo("Código: ", d.codigo, sizeof d.codigo)) return;
+    Repuesto existente;
+    if (obtenerRepuestoPorCodigo(d.codigo, existente) == RES_OK) {
+        cout << "ERROR: El codigo '" << d.codigo << "' ya esta registrado.\n";
+        return;
+    }
+    if (!leerTexto("Nombre: ", d.nombre, sizeof d.nombre)) return;
+    if (!leerTexto("Marca: ", d.marca, sizeof d.marca)) return;
+    if (!leerFloat("Precio unitario (> 0): ", &d.precio, 0, true)) return;
+    if (!leerEntero("Stock inicial (>= 0): ", &d.stock, 0, INT_MAX)) return;
+    if (!leerEntero("Stock mínimo (>= 0): ", &d.stockMinimo, 0, INT_MAX)) return;
+    bool ok;
+    if (!leerSN("Confirmar el registro? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Registro descartado.\n"; return; }
+    int idNuevo = 0;
+    Resultado res = registrarRepuesto(d, &idNuevo);
+    if (res == RES_OK) cout << "Repuesto '" << d.codigo << " - " << d.nombre << "' registrado correctamente (ID " << idNuevo << ").\n";
+    else mostrarError(res, 0, 0, 0, 0, 0, 0);
+}
+
+void menuBuscarRepuesto() {
+    cout << "\nBuscar por: 1. ID   2. Codigo o nombre parcial\n";
+    int modo;
+    if (!leerEntero("Seleccione: ", &modo, 1, 2)) return;
+    if (modo == 1) {
+        int id;
+        if (!leerEntero("ID del repuesto: ", &id, 1, INT_MAX)) return;
+        Repuesto r;
+        Resultado res = obtenerRepuestoPorID(id, r);
+        if (res == RES_OK) mostrarRepuesto(r);
+        else if (res == RES_REPUESTO_ELIMINADO) cout << "El repuesto con ID " << id << " ('" << r.nombre << "') fue ELIMINADO y no esta disponible.\n";
+        else if (res == RES_REPUESTO_NO_EXISTE) cout << "ERROR: No existe un repuesto con ID " << id << ".\n";
+        else mostrarError(res, 0, 0, 0, 0, 0, 0);
+    } else {
+        char sub[100];
+        if (!leerTexto("Codigo o nombre (parcial): ", sub, sizeof sub)) return;
+        Repuesto lista[MAX_RESULTADOS];
+        int n;
+        bool hayMas;
+        Resultado res = buscarRepuestosPorTexto(sub, lista, MAX_RESULTADOS, &n, &hayMas);
+        if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+        if (n == 0) cout << "No hay repuestos que coincidan con '" << sub << "'.\n";
+        else { mostrarListaRepuestos(lista, n); avisarSiHayMas(hayMas); }
+    }
+}
+
+void menuEntradaMercancia() {
+    cout << "\n--- ENTRADA DE MERCANCÍA (escriba CANCELAR para abortar) ---\n";
+    char cod[20];
+    if (!leerCodigo("Codigo del repuesto: ", cod, sizeof cod)) return;
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorCodigo(cod, r);
+    if (res == RES_REPUESTO_NO_EXISTE) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    cout << "Repuesto: " << r.nombre << " - stock actual: " << r.stock << "\n";
+    int cant;
+    if (!leerEntero("Cantidad que ingresa (> 0): ", &cant, 1, INT_MAX)) return;
+    bool ok;
+    if (!leerSN("Confirmar la entrada? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Entrada descartada.\n"; return; }
+    int antes = r.stock;
+    res = registrarEntradaMercancia(r.id, cant);
+    if (res == RES_OK) {
+        Repuesto despues;
+        obtenerRepuestoPorID(r.id, despues);
+        cout << "Entrada registrada. Stock de '" << r.nombre << "': " << antes << " -> " << despues.stock << ".\n";
+    } else mostrarError(res, 0, 0, 0, r.id, cant, 0);
+}
+
+void menuCambiarPrecio() {
+    cout << "\n--- CAMBIAR PRECIO (escriba CANCELAR para abortar) ---\n";
+    char cod[20];
+    if (!leerCodigo("Codigo del repuesto: ", cod, sizeof cod)) return;
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorCodigo(cod, r);
+    if (res == RES_REPUESTO_NO_EXISTE) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    cout << fixed;
+    cout.precision(2);
+    cout << "Repuesto: " << r.nombre << " - precio actual: " << r.precio << "\n";
+    float nuevo;
+    if (!leerFloat("Nuevo precio (> 0): ", &nuevo, 0, true)) return;
+    bool ok;
+    if (!leerSN("Confirmar el cambio de precio? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Cambio descartado.\n"; return; }
+    float antes = r.precio;
+    res = cambiarPrecioRepuesto(r.id, nuevo);
+    if (res == RES_OK) cout << "Precio de '" << r.nombre << "': " << antes << " -> " << nuevo
+                            << " (las ordenes ya registradas no cambian).\n";
+    else mostrarError(res, 0, 0, 0, r.id, 0, 0);
+}
+
+void menuEliminarRepuesto() {
+    cout << "\n--- ELIMINAR REPUESTO (escriba CANCELAR para abortar) ---\n";
+    char cod[20];
+    if (!leerCodigo("Código del repuesto: ", cod, sizeof cod)) return;
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorCodigo(cod, r);
+    if (res == RES_REPUESTO_NO_EXISTE) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    bool enUso;
+    res = repuestoEnUso(r.id, &enUso);
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    if (enUso) { mostrarError(RES_REPUESTO_EN_USO, 0, 0, 0, r.id, 0, 0); return; }
+    bool ok;
+    if (!leerSN("Confirmar la eliminacion? (S/N): ", &ok)) return;
+    if (!ok) { cout << "Eliminación descartada.\n"; return; }
+    res = eliminarRepuesto(r.id);
+    if (res == RES_OK) cout << "Repuesto '" << cod << "' eliminado (borrado logico).\n";
+    else mostrarError(res, 0, 0, 0, r.id, 0, 0);
+}
+
+void menuListarRepuestos() {
+    Repuesto lista[MAX_RESULTADOS];
+    int n;
+    bool hayMas;
+    Resultado res = listarRepuestos(lista, MAX_RESULTADOS, &n, &hayMas);
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    if (n == 0) cout << "No hay repuestos registrados.\n";
+    else { mostrarListaRepuestos(lista, n); avisarSiHayMas(hayMas); }
+}
+
+void menuInventario() {
+    const char* items[] = {"1. Registrar repuesto", "2. Buscar repuesto", "3. Registrar entrada de mercancia",
+                           "4. Cambiar precio", "5. Eliminar repuesto", "6. Listar repuestos",
+                           "0. Volver al menu principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("INVENTARIO DE REPUESTOS", nullptr, items, 7);
+        int op;
+        if (!leerOpcion(&op, 6)) continue;
+        switch (op) {
+            case 1: menuRegistrarRepuesto(); break;
+            case 2: menuBuscarRepuesto(); break;
+            case 3: menuEntradaMercancia(); break;
+            case 4: menuCambiarPrecio(); break;
+            case 5: menuEliminarRepuesto(); break;
+            case 6: menuListarRepuestos(); break;
+            case 0: return;
+        }
+    }
+}
+
+//ORDENES        
 void mostrarOrden(OrdenServicio* o, SistemaTaller* s) {
     const int W1 = 10, W2 = 25, W3 = 6, W4 = 10, W5 = 12;
     const int INNER = W1 + W2 + W3 + W4 + W5 + 4;   // ancho interior de la caja
