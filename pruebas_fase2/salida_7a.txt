@@ -1,0 +1,161 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 6
+
++--------------------------------------------
+|               MANTENIMIENTO               |
++-------------------------------------------+
+| 1. Verificar integridad                   |
+| 2. Crear respaldo (backup)                |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- RESPALDO DE DATOS ---
+Respaldo creado correctamente en la carpeta: backup_2026-11-19_21-50
+
++--------------------------------------------
+|               MANTENIMIENTO               |
++-------------------------------------------+
+| 1. Verificar integridad                   |
+| 2. Crear respaldo (backup)                |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: NU999AA
+Marca: Renault
+Modelo: Logan
+Año (1950-2027): 2017
+Kilometraje: 15000
+Nombre del propietario: Rosa Medina
+Cedula del propietario: V-12121212
+Telefono del propietario: 0414-9999999
+Confirmar el registro (S/N): S
+Vehiculo 'NU999AA' (Renault Logan) registrado correctamente (ID 9).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- ABRIR ORDEN DE SERVICIO (escriba CANCELAR para abortar) ---
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        1 | ACTIVO   |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+Placa del vehiculo: NU999AA
+ID del mecanico responsable (segun la lista): 2
+Kilometraje de ingreso: 15000
+Falla reportada: Revision antes de viaje largo
+Confirmar la apertura de la orden (S/N): S
+Orden #12 abierta para el vehiculo 'NU999AA' (mecanico: Ana Villalobos).
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

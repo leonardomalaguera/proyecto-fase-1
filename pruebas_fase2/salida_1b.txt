@@ -1,0 +1,157 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 5
+
+╔------╦-----------╦------------------------╦-------╦----------╦----------------------╗
+| ID   | Placa     | Vehiculo               | Ano   | Km       | Propietario          |
++-------------------------------------------------------------------------------------+
+| 1    | AB123CD   | Toyota Corolla         | 2015  |    40000 | María González       |
+| 2    | XY987ZW   | Chevrolet Aveo         | 2009  |   128300 | Carlos Ramírez       |
+| 3    | LM456NP   | Ford Fiesta            | 2012  |    90000 | Luisa Fernández      |
++-------------------------------------------------------------------------------------+
+Total de vehiculos mostrados: 3
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 2
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        0 | ACTIVO   |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 2
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| ID   | Codigo    | Nombre                   | Marca      | Precio   | Stock  | Mín   | Estado       |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| 1    | FIL-001   | Filtro de aceite         | Bosch      |     8.50 |     40 |    10 | OK           |
+| 2    | PAS-002   | Pastillas de freno delan | Brembo     |    35.00 |     25 |     8 | OK           |
+| 3    | BUJ-003   | Bujia                    | NGK        |     4.25 |     60 |    20 | OK           |
+| 4    | ACE-004   | Aceite 10W40 (litro)     | Mobil      |     9.75 |     80 |    20 | OK           |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+Total de repuestos mostrados: 4
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

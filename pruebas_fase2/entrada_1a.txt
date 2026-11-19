@@ -1,0 +1,107 @@
+Autoservicio El Lago
+J-12345678-9
+Av. 5 de Julio, Maracaibo, Zulia
+0261-7000000
+1
+1
+AB123CD
+Toyota
+Corolla
+2015
+40000
+María González
+V-12345678
+0414-1111111
+S
+0
+1
+1
+XY987ZW
+Chevrolet
+Aveo
+2009
+128300
+Carlos Ramírez
+V-9876543
+0412-2222222
+S
+0
+1
+1
+LM456NP
+Ford
+Fiesta
+2012
+90000
+Luisa Fernández
+V-14555666
+0424-3333333
+S
+0
+2
+1
+José Pérez
+V-11111111
+FRENOS
+2020-03-15
+S
+0
+2
+1
+Ana Villalobos
+V-22222222
+MOTOR
+2021-06-01
+S
+0
+3
+1
+FIL-001
+Filtro de aceite
+Bosch
+8.50
+40
+10
+S
+0
+3
+1
+PAS-002
+Pastillas de freno delanteras
+Brembo
+35.00
+25
+8
+S
+0
+3
+1
+BUJ-003
+Bujia
+NGK
+4.25
+60
+20
+S
+0
+3
+1
+ACE-004
+Aceite 10W40 (litro)
+Mobil
+9.75
+80
+20
+S
+0
+1
+5
+0
+2
+3
+0
+3
+6
+0
+0
+S

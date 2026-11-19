@@ -1,0 +1,376 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+numero de orden: 12
+[DEPURACION] Orden #12 leida en la posicion 5736 bytes
+
++-------------------------------------------------------------------+
+|                       ORDEN DE SERVICIO #12                       |
++-------------------------------------------------------------------+
+| Estado   : ABIERTA    Apertura: 2026-11-19                        |
+| Cierre   : -                                                      |
+| Vehiculo : KJ321HG - Honda Civic 2018 (54000 km)                  |
+| Dueno    : Pedro Morales                                          |
+| Mecanico : Ana Villalobos (MOTOR)                                 |
+| Km ingreso: 54000                                                 |
+| Falla    : Ruido al girar el volante                              |
++----------+-------------------------+------+----------+------------+
+| Codigo   | Repuesto                | Cant | P.Unit   | Total      |
++----------+-------------------------+------+----------+------------+
+| BUJ-003  | Bujia                   |    2 |     4.25 |       8.50 |
+| FIL-009  | Filtro de aire          |    1 |    11.00 |      11.00 |
+| DIS-010  | Disco de freno          |    1 |    48.00 |      48.00 |
++----------+-------------------------+------+----------+------------+
+| Repuestos                                            |      67.50 |
+| Mano de obra                                         |       0.00 |
+| TOTAL                                                |      67.50 |
++------------------------------------------------------+------------+
+Lineas de detalle: 3 (maximo por orden: 20)
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: LIQ-008
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Liquido de frenos DOT4' a la orden #12. Stock restante: 27.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: BUJ-003
+Cantidad (> 0): 2
+Se agregaron 2 unidad(es) de 'Bujia' a la orden #12. Stock restante: 48.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+Buscar por: 1. ID   2. Codigo o nombre parcial
+Seleccione: 2
+Codigo o nombre (parcial): DIS-010
+
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| ID   | Codigo    | Nombre                   | Marca      | Precio   | Stock  | Mín   | Estado       |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| 10   | DIS-010   | Disco de freno           | Brembo     |    48.00 |     12 |     6 | OK           |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+Total de repuestos mostrados: 1
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 3
+
+--- QUITAR REPUESTO DE ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: DIS-010
+Se quito 'Disco de freno' de la orden #12. Stock: 12 -> 13.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+Buscar por: 1. ID   2. Codigo o nombre parcial
+Seleccione: 2
+Codigo o nombre (parcial): DIS-010
+
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| ID   | Codigo    | Nombre                   | Marca      | Precio   | Stock  | Mín   | Estado       |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| 10   | DIS-010   | Disco de freno           | Brembo     |    48.00 |     13 |     6 | OK           |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+Total de repuestos mostrados: 1
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 4
+
+--- CERRAR ORDEN (escriba CANCELAR para abortar) ---
+numero de orden: 12
+Mano de obra (>= 0): 50
+Confirmar el cierre de la orden? (S/N): S
+Orden #12 cerrada. Total: 84.00.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

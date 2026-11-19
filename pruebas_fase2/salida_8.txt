@@ -1,0 +1,321 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 5
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REPORTE 1: HISTORIAL DE VEHICULO (escriba CANCELAR para abortar) ---
+Placa del vehiculo: XY987ZW
+
+Vehiculo: XY987ZW - Chevrolet Aveo 2009
+  Kilometraje : 130000 km
+  Propietario : Carlos Ramírez (Cedula: V-9876543)
+  Telefono    : 0412-2222222
+  Registrado  : 2026-11-19 21:50 (ID 2)
+
++-------+------------+------------------------+-----------+------------+
+| Orden | Fecha      | Mecanico               | Estado    | Total      |
++-------+------------+------------------------+-----------+------------+
+| #2    | 2026-11-19 | José Pérez             | CERRADA   |     256.25 |
+| #10   | 2026-11-19 | Carlos Soto            | ABIERTA   |      19.50 |
++-------+------------+------------------------+-----------+------------+
+Total facturado en ordenes CERRADAS: 256.25
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 5
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REPORTE 1: HISTORIAL DE VEHICULO (escriba CANCELAR para abortar) ---
+Placa del vehiculo: AB123CD
+
+Vehiculo: AB123CD - Toyota Corolla 2015
+  Kilometraje : 42500 km
+  Propietario : María González (Cedula: V-12345678)
+  Telefono    : 0414-1111111
+  Registrado  : 2026-11-19 21:50 (ID 1)
+
++-------+------------+------------------------+-----------+------------+
+| Orden | Fecha      | Mecanico               | Estado    | Total      |
++-------+------------+------------------------+-----------+------------+
+| #1    | 2026-11-19 | José Pérez             | CERRADA   |     139.50 |
+| #6    | 2026-11-19 | Ana Villalobos         | CERRADA   |      95.75 |
++-------+------------+------------------------+-----------+------------+
+Total facturado en ordenes CERRADAS: 235.25
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 5
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- REPORTE 2: REPUESTOS MAS UTILIZADOS (ordenes CERRADAS) ---
+
+╔------╦-----------╦------------------------------╦----------╗
+║ Pos  ║ Codigo    ║ Repuesto                     ║ Unidades ║
+╠------╬-----------╬------------------------------╬----------╣
+║    1 ║ BUJ-003   ║ Bujia                        ║        8 ║
+║    2 ║ ACE-004   ║ Aceite 10W40 (litro)         ║        8 ║
+║    3 ║ FIL-001   ║ Filtro de aceite             ║        4 ║
+║    4 ║ PAS-002   ║ Pastillas de freno delantera ║        3 ║
+║    5 ║ LIQ-008   ║ Liquido de frenos DOT4       ║        2 ║
+║    6 ║ FIL-009   ║ Filtro de aire               ║        2 ║
+║    7 ║ DIS-010   ║ Disco de freno               ║        2 ║
+║    8 ║ COR-007   ║ Correa de distribucion       ║        1 ║
+║    9 ║ BOM-012   ║ Bomba de agua                ║        1 ║
+╚------╩-----------╩------------------------------╩----------╝
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 5
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 3
+
+--- REPORTE 3: FACTURACION POR MECANICO (ordenes CERRADAS) ---
+
+╔--------------------------╦-----------╦-----------╦-----------╗
+║ Mecánico                 ║ ordenes   ║ M. obra   ║ Repuestos ║
+╠--------------------------╬-----------╬-----------╬-----------╣
+║ José Pérez               ║         2 ║    100.00 ║    295.75 ║
+║ Ana Villalobos           ║         2 ║     65.00 ║    139.25 ║
+║ Luis Fuenmayor (BAJA)    ║         2 ║     40.00 ║     11.00 ║
+║ Carlos Soto              ║         1 ║     18.00 ║      8.50 ║
+╚--------------------------╩-----------╩-----------╩-----------╝
+
++--------------------------------------------
+|                 REPORTES                  |
++-------------------------------------------+
+| 1. Historial de vehiculo                  |
+| 2. Repuestos mas utilizados               |
+| 3. Facturacion por mecanico               |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 7
+
+Listar: 1. Todas   2. Por estado   3. Historial de un vehiculo
+Seleccione: 2
+Estado (ABIERTA/CERRADA/ANULADA): ABIERTA
+
++-------+-----------+------------------------------+------------------------+------------+------------+
+| Orden | Estado    | vehiculo                     | Mecanico               | Apertura   | Total      |
++-------+-----------+------------------------------+------------------------+------------+------------+
+| #9    | ABIERTA   | WS963QA - Mazda 3            | José Pérez             | 2026-11-19 |      83.00 |
+| #10   | ABIERTA   | XY987ZW - Chevrolet Aveo     | Carlos Soto            | 2026-11-19 |      19.50 |
++-------+-----------+------------------------------+------------------------+------------+------------+
+Total de ordenes mostradas: 2
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 7
+
+Listar: 1. Todas   2. Por estado   3. Historial de un vehiculo
+Seleccione: 2
+Estado (ABIERTA/CERRADA/ANULADA): ANULADA
+
++-------+-----------+------------------------------+------------------------+------------+------------+
+| Orden | Estado    | vehiculo                     | Mecanico               | Apertura   | Total      |
++-------+-----------+------------------------------+------------------------+------------+------------+
+| #7    | ANULADA   | TR852UV - Nissan Sentra      | Ana Villalobos         | 2026-11-19 |     219.00 |
+| #8    | ANULADA   | GH741JK - Kia Rio            | Carlos Soto            | 2026-11-19 |     132.00 |
++-------+-----------+------------------------------+------------------------+------------+------------+
+Total de ordenes mostradas: 2
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

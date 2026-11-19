@@ -1,0 +1,287 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- ABRIR ORDEN DE SERVICIO (escriba CANCELAR para abortar) ---
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        1 | ACTIVO   |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+Placa del vehiculo: KJ321HG
+ID del mecanico responsable (segun la lista): 2
+Kilometraje de ingreso: 54000
+Falla reportada: Ruido al girar el volante
+Confirmar la apertura de la orden (S/N): S
+Orden #12 abierta para el vehiculo 'KJ321HG' (mecanico: Ana Villalobos).
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: BUJ-003
+Cantidad (> 0): 2
+Se agregaron 2 unidad(es) de 'Bujia' a la orden #12. Stock restante: 50.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: FIL-009
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Filtro de aire' a la orden #12. Stock restante: 32.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: DIS-010
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Disco de freno' a la orden #12. Stock restante: 12.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+numero de orden: 12
+[DEPURACION] Orden #12 leida en la posicion 5736 bytes
+
++-------------------------------------------------------------------+
+|                       ORDEN DE SERVICIO #12                       |
++-------------------------------------------------------------------+
+| Estado   : ABIERTA    Apertura: 2026-11-19                        |
+| Cierre   : -                                                      |
+| Vehiculo : KJ321HG - Honda Civic 2018 (54000 km)                  |
+| Dueno    : Pedro Morales                                          |
+| Mecanico : Ana Villalobos (MOTOR)                                 |
+| Km ingreso: 54000                                                 |
+| Falla    : Ruido al girar el volante                              |
++----------+-------------------------+------+----------+------------+
+| Codigo   | Repuesto                | Cant | P.Unit   | Total      |
++----------+-------------------------+------+----------+------------+
+| BUJ-003  | Bujia                   |    2 |     4.25 |       8.50 |
+| FIL-009  | Filtro de aire          |    1 |    11.00 |      11.00 |
+| DIS-010  | Disco de freno          |    1 |    48.00 |      48.00 |
++----------+-------------------------+------+----------+------------+
+| Repuestos                                            |      67.50 |
+| Mano de obra                                         |       0.00 |
+| TOTAL                                                |      67.50 |
++------------------------------------------------------+------------+
+Lineas de detalle: 3 (maximo por orden: 20)
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

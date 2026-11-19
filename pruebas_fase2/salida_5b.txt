@@ -1,0 +1,142 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| ID   | Codigo    | Nombre                   | Marca      | Precio   | Stock  | Mín   | Estado       |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+| 1    | FIL-001   | Filtro de aceite         | Bosch      |     8.50 |     37 |    10 | OK           |
+| 2    | PAS-002   | Pastillas de freno delan | Brembo     |    35.00 |     22 |     8 | OK           |
+| 3    | BUJ-003   | Bujia                    | NGK        |     4.25 |     56 |    20 | OK           |
+| 4    | ACE-004   | Aceite 10W40 (litro)     | Mobil      |     9.75 |     74 |    20 | OK           |
+| 5    | BAT-005   | Bateria 12V 60Ah         | Duncan     |    95.00 |     10 |     3 | OK           |
+| 6    | AMO-006   | Amortiguador delantero   | Monroe     |    62.00 |     12 |     4 | OK           |
+| 7    | COR-007   | Correa de distribucion   | Gates      |    28.50 |     14 |     5 | OK           |
+| 8    | LIQ-008   | Liquido de frenos DOT4   | Castrol    |     6.00 |     28 |    10 | OK           |
+| 9    | FIL-009   | Filtro de aire           | Mann       |    11.00 |     33 |    10 | OK           |
+| 10   | DIS-010   | Disco de freno           | Brembo     |    48.00 |     13 |     6 | OK           |
+| 11   | RAD-011   | Radiador                 | Valeo      |   120.00 |      2 |     2 | BAJO STOCK   |
+| 12   | BOM-012   | Bomba de agua            | Gates      |    45.00 |      7 |     3 | OK           |
++------+-----------+--------------------------+------------+----------+--------+-------+--------------+
+Total de repuestos mostrados: 12
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+numero de orden: 1
+[DEPURACION] Orden #1 leida en la posicion 16 bytes
+
++-------------------------------------------------------------------+
+|                       ORDEN DE SERVICIO #1                        |
++-------------------------------------------------------------------+
+| Estado   : ANULADA    Apertura: 2026-11-19                        |
+| Cierre   : 2026-11-19                                             |
+| Vehiculo : AB123CD - Toyota Corolla 2015 (42500 km)               |
+| Dueno    : María González                                         |
+| Mecanico : José Pérez (FRENOS)                                    |
+| Km ingreso: 41000                                                 |
+| Falla    : Frenos chirriando al detenerse                         |
++----------+-------------------------+------+----------+------------+
+| Codigo   | Repuesto                | Cant | P.Unit   | Total      |
++----------+-------------------------+------+----------+------------+
+| FIL-001  | Filtro de aceite        |    1 |     8.50 |       8.50 |
+| ACE-004  | Aceite 10W40 (litro)    |    4 |     9.75 |      39.00 |
+| BUJ-003  | Bujia                   |    4 |     4.25 |      17.00 |
+| PAS-002  | Pastillas de freno dela |    1 |    35.00 |      35.00 |
++----------+-------------------------+------+----------+------------+
+| Repuestos                                            |      99.50 |
+| Mano de obra                                         |      40.00 |
+| TOTAL                                                |     139.50 |
++------------------------------------------------------+------------+
+Lineas de detalle: 4 (maximo por orden: 20)
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

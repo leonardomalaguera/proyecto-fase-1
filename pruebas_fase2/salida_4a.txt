@@ -1,0 +1,1025 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR REPUESTO (escriba CANCELAR para abortar) ---
+Código: REF-013
+Nombre: Termostato
+Marca: Gates
+Precio unitario (> 0): 14.00
+Stock inicial (>= 0): 50
+Stock mínimo (>= 0): 5
+Confirmar el registro? (S/N): S
+Repuesto 'REF-013 - Termostato' registrado correctamente (ID 13).
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR REPUESTO (escriba CANCELAR para abortar) ---
+Código: REF-014
+Nombre: Sensor de oxigeno
+Marca: Bosch
+Precio unitario (> 0): 39.00
+Stock inicial (>= 0): 50
+Stock mínimo (>= 0): 5
+Confirmar el registro? (S/N): S
+Repuesto 'REF-014 - Sensor de oxigeno' registrado correctamente (ID 14).
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR REPUESTO (escriba CANCELAR para abortar) ---
+Código: REF-015
+Nombre: Fusible 20A
+Marca: Bosch
+Precio unitario (> 0): 1.50
+Stock inicial (>= 0): 50
+Stock mínimo (>= 0): 5
+Confirmar el registro? (S/N): S
+Repuesto 'REF-015 - Fusible 20A' registrado correctamente (ID 15).
+
++--------------------------------------------
+|          INVENTARIO DE REPUESTOS          |
++-------------------------------------------+
+| 1. Registrar repuesto                     |
+| 2. Buscar repuesto                        |
+| 3. Registrar entrada de mercancia         |
+| 4. Cambiar precio                         |
+| 5. Eliminar repuesto                      |
+| 6. Listar repuestos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- ABRIR ORDEN DE SERVICIO (escriba CANCELAR para abortar) ---
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        1 | ACTIVO   |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+Placa del vehiculo: PQ654RS
+ID del mecanico responsable (segun la lista): 2
+Kilometraje de ingreso: 89000
+Falla reportada: Revision completa de 15 puntos
+Confirmar la apertura de la orden (S/N): S
+Orden #12 abierta para el vehiculo 'PQ654RS' (mecanico: Ana Villalobos).
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: FIL-001
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Filtro de aceite' a la orden #12. Stock restante: 35.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: PAS-002
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Pastillas de freno delanteras' a la orden #12. Stock restante: 20.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: BUJ-003
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Bujia' a la orden #12. Stock restante: 51.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: ACE-004
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Aceite 10W40 (litro)' a la orden #12. Stock restante: 69.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: BAT-005
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Bateria 12V 60Ah' a la orden #12. Stock restante: 9.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: AMO-006
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Amortiguador delantero' a la orden #12. Stock restante: 11.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: COR-007
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Correa de distribucion' a la orden #12. Stock restante: 13.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: LIQ-008
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Liquido de frenos DOT4' a la orden #12. Stock restante: 27.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: FIL-009
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Filtro de aire' a la orden #12. Stock restante: 32.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: DIS-010
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Disco de freno' a la orden #12. Stock restante: 12.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: RAD-011
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Radiador' a la orden #12. Stock restante: 1.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: BOM-012
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Bomba de agua' a la orden #12. Stock restante: 6.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: REF-013
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Termostato' a la orden #12. Stock restante: 49.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: REF-014
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Sensor de oxigeno' a la orden #12. Stock restante: 49.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---
+Numero de orden: 12
+Codigo del repuesto: REF-015
+Cantidad (> 0): 1
+Se agregaron 1 unidad(es) de 'Fusible 20A' a la orden #12. Stock restante: 49.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+numero de orden: 12
+[DEPURACION] Orden #12 leida en la posicion 5736 bytes
+
++-------------------------------------------------------------------+
+|                       ORDEN DE SERVICIO #12                       |
++-------------------------------------------------------------------+
+| Estado   : ABIERTA    Apertura: 2026-11-19                        |
+| Cierre   : -                                                      |
+| Vehiculo : PQ654RS - Hyundai Accent 2014 (89000 km)               |
+| Dueno    : Ana Rojas                                              |
+| Mecanico : Ana Villalobos (MOTOR)                                 |
+| Km ingreso: 89000                                                 |
+| Falla    : Revision completa de 15 puntos                         |
++----------+-------------------------+------+----------+------------+
+| Codigo   | Repuesto                | Cant | P.Unit   | Total      |
++----------+-------------------------+------+----------+------------+
+| FIL-001  | Filtro de aceite        |    1 |     8.50 |       8.50 |
+| PAS-002  | Pastillas de freno dela |    1 |    35.00 |      35.00 |
+| BUJ-003  | Bujia                   |    1 |     4.25 |       4.25 |
+| ACE-004  | Aceite 10W40 (litro)    |    1 |     9.75 |       9.75 |
+| BAT-005  | Bateria 12V 60Ah        |    1 |    95.00 |      95.00 |
+| AMO-006  | Amortiguador delantero  |    1 |    62.00 |      62.00 |
+| COR-007  | Correa de distribucion  |    1 |    28.50 |      28.50 |
+| LIQ-008  | Liquido de frenos DOT4  |    1 |     6.00 |       6.00 |
+| FIL-009  | Filtro de aire          |    1 |    11.00 |      11.00 |
+| DIS-010  | Disco de freno          |    1 |    48.00 |      48.00 |
+| RAD-011  | Radiador                |    1 |   120.00 |     120.00 |
+| BOM-012  | Bomba de agua           |    1 |    45.00 |      45.00 |
+| REF-013  | Termostato              |    1 |    14.00 |      14.00 |
+| REF-014  | Sensor de oxigeno       |    1 |    39.00 |      39.00 |
+| REF-015  | Fusible 20A             |    1 |     1.50 |       1.50 |
++----------+-------------------------+------+----------+------------+
+| Repuestos                                            |     527.50 |
+| Mano de obra                                         |       0.00 |
+| TOTAL                                                |     527.50 |
++------------------------------------------------------+------------+
+Lineas de detalle: 15 (maximo por orden: 20)
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

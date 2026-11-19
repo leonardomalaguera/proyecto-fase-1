@@ -1,0 +1,506 @@
+PRIMER ARRANQUE: no existe taller.bin. Ingrese los datos del taller.
+Nombre del taller: Autoservicio El Lago
+RIF: J-12345678-9
+Direccion: Av. 5 de Julio, Maracaibo, Zulia
+Telefono: 0261-7000000
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: AB123CD
+Marca: Toyota
+Modelo: Corolla
+Año (1950-2027): 2015
+Kilometraje: 40000
+Nombre del propietario: María González
+Cedula del propietario: V-12345678
+Telefono del propietario: 0414-1111111
+Confirmar el registro (S/N): S
+Vehiculo 'AB123CD' (Toyota Corolla) registrado correctamente (ID 1).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: XY987ZW
+Marca: Chevrolet
+Modelo: Aveo
+Año (1950-2027): 2009
+Kilometraje: 128300
+Nombre del propietario: Carlos Ramírez
+Cedula del propietario: V-9876543
+Telefono del propietario: 0412-2222222
+Confirmar el registro (S/N): S
+Vehiculo 'XY987ZW' (Chevrolet Aveo) registrado correctamente (ID 2).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: LM456NP
+Marca: Ford
+Modelo: Fiesta
+Año (1950-2027): 2012
+Kilometraje: 90000
+Nombre del propietario: Luisa Fernández
+Cedula del propietario: V-14555666
+Telefono del propietario: 0424-3333333
+Confirmar el registro (S/N): S
+Vehiculo 'LM456NP' (Ford Fiesta) registrado correctamente (ID 3).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: KJ321HG
+Marca: Honda
+Modelo: Civic
+Año (1950-2027): 2018
+Kilometraje: 52000
+Nombre del propietario: Pedro Morales
+Cedula del propietario: V-18222333
+Telefono del propietario: 0416-4444444
+Confirmar el registro (S/N): S
+Vehiculo 'KJ321HG' (Honda Civic) registrado correctamente (ID 4).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: PQ654RS
+Marca: Hyundai
+Modelo: Accent
+Año (1950-2027): 2014
+Kilometraje: 87000
+Nombre del propietario: Ana Rojas
+Cedula del propietario: V-20111222
+Telefono del propietario: 0414-5555555
+Confirmar el registro (S/N): S
+Vehiculo 'PQ654RS' (Hyundai Accent) registrado correctamente (ID 5).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- REGISTRAR VEHICULO (escriba CANCELAR en cualquier momento para abortar) ---
+Placa: TR852UV
+Marca: Nissan
+Modelo: Sentra
+Año (1950-2027): 2011
+Kilometraje: 143000
+Nombre del propietario: Jorge Paz
+Cedula del propietario: V-10999888
+Telefono del propietario: 0412-6666666
+Confirmar el registro (S/N): S
+Vehiculo 'TR852UV' (Nissan Sentra) registrado correctamente (ID 6).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 4
+
+--- ELIMINAR VEHICULO (escriba CANCELAR para abortar) ---
+Placa del vehiculo a eliminar: LM456NP
+Confirmar la eliminacion (S/N): S
+Vehiculo 'LM456NP' eliminado (borrado logico: el registro se conserva en el archivo).
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+Buscar por: 1. Placa   2. Propietario   3. ID
+Seleccione: 3
+ID del vehiculo: 5
+[DEPURACION] Vehiculo ID 5 leido en la posicion 1168 bytes (header 16 + indice 4 x 288 bytes)
+
+Vehiculo: PQ654RS - Hyundai Accent 2014
+  Kilometraje : 87000 km
+  Propietario : Ana Rojas (Cedula: V-20111222)
+  Telefono    : 0414-5555555
+  Registrado  : 2026-11-19 21:50 (ID 5)
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 2
+
+Buscar por: 1. Placa   2. Propietario   3. ID
+Seleccione: 3
+ID del vehiculo: 3
+[DEPURACION] Vehiculo ID 3 leido en la posicion 592 bytes (header 16 + indice 2 x 288 bytes)
+El vehiculo con ID 3 (placa LM456NP) fue ELIMINADO y no esta disponible.
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 1
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 5
+
+╔------╦-----------╦------------------------╦-------╦----------╦----------------------╗
+| ID   | Placa     | Vehiculo               | Ano   | Km       | Propietario          |
++-------------------------------------------------------------------------------------+
+| 1    | AB123CD   | Toyota Corolla         | 2015  |    40000 | María González       |
+| 2    | XY987ZW   | Chevrolet Aveo         | 2009  |   128300 | Carlos Ramírez       |
+| 4    | KJ321HG   | Honda Civic            | 2018  |    52000 | Pedro Morales        |
+| 5    | PQ654RS   | Hyundai Accent         | 2014  |    87000 | Ana Rojas            |
+| 6    | TR852UV   | Nissan Sentra          | 2011  |   143000 | Jorge Paz            |
++-------------------------------------------------------------------------------------+
+Total de vehiculos mostrados: 5
+
++--------------------------------------------
+|           GESTION DE VEHICULOS            |
++-------------------------------------------+
+| 1. Registrar vehiculo                     |
+| 2. Buscar vehiculo                        |
+| 3. Actualizar vehiculo                    |
+| 4. Eliminar vehiculo                      |
+| 5. Listar vehiculos                       |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

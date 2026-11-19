@@ -1,0 +1,95 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+numero de orden: 12
+[DEPURACION] Orden #12 leida en la posicion 5736 bytes
+
++-------------------------------------------------------------------+
+|                       ORDEN DE SERVICIO #12                       |
++-------------------------------------------------------------------+
+| Estado   : ABIERTA    Apertura: 2026-11-19                        |
+| Cierre   : -                                                      |
+| Vehiculo : PQ654RS - Hyundai Accent 2014 (89000 km)               |
+| Dueno    : Ana Rojas                                              |
+| Mecanico : Ana Villalobos (MOTOR)                                 |
+| Km ingreso: 89000                                                 |
+| Falla    : Revision completa de 15 puntos                         |
++----------+-------------------------+------+----------+------------+
+| Codigo   | Repuesto                | Cant | P.Unit   | Total      |
++----------+-------------------------+------+----------+------------+
+| FIL-001  | Filtro de aceite        |    1 |     8.50 |       8.50 |
+| PAS-002  | Pastillas de freno dela |    1 |    35.00 |      35.00 |
+| BUJ-003  | Bujia                   |    1 |     4.25 |       4.25 |
+| ACE-004  | Aceite 10W40 (litro)    |    1 |     9.75 |       9.75 |
+| BAT-005  | Bateria 12V 60Ah        |    1 |    95.00 |      95.00 |
+| AMO-006  | Amortiguador delantero  |    1 |    62.00 |      62.00 |
+| COR-007  | Correa de distribucion  |    1 |    28.50 |      28.50 |
+| LIQ-008  | Liquido de frenos DOT4  |    1 |     6.00 |       6.00 |
+| FIL-009  | Filtro de aire          |    1 |    11.00 |      11.00 |
+| DIS-010  | Disco de freno          |    1 |    48.00 |      48.00 |
+| RAD-011  | Radiador                |    1 |   120.00 |     120.00 |
+| BOM-012  | Bomba de agua           |    1 |    45.00 |      45.00 |
+| REF-013  | Termostato              |    1 |    14.00 |      14.00 |
+| REF-014  | Sensor de oxigeno       |    1 |    39.00 |      39.00 |
+| REF-015  | Fusible 20A             |    1 |     1.50 |       1.50 |
++----------+-------------------------+------+----------+------------+
+| Repuestos                                            |     527.50 |
+| Mano de obra                                         |       0.00 |
+| TOTAL                                                |     527.50 |
++------------------------------------------------------+------------+
+Lineas de detalle: 15 (maximo por orden: 20)
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.

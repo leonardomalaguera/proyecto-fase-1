@@ -1,0 +1,397 @@
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 2
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 4
+
+--- DAR DE BAJA MECANICO (escriba CANCELAR para abortar) ---
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        1 | ACTIVO   |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+ID del mecanico a dar de baja (segun la lista): 1
+Confirmar la baja del mecanico? (S/N): S
+ERROR: El mecanico 'José Pérez' tiene 1 orden(es) ABIERTA(S) y no puede darse de baja.
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 4
+
+--- CERRAR ORDEN (escriba CANCELAR para abortar) ---
+numero de orden: 9
+Mano de obra (>= 0): 45
+Confirmar el cierre de la orden? (S/N): S
+Orden #9 cerrada. Total: 128.00.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 2
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 4
+
+--- DAR DE BAJA MECANICO (escriba CANCELAR para abortar) ---
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        0 | ACTIVO   |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+ID del mecanico a dar de baja (segun la lista): 1
+Confirmar la baja del mecanico? (S/N): S
+Mecanico 'José Pérez' dado de baja. Su historial de ordenes se conserva.
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 7
+
+Listar: 1. Todas   2. Por estado   3. Historial de un vehiculo
+Seleccione: 2
+Estado (ABIERTA/CERRADA/ANULADA): CERRADA
+
++-------+-----------+------------------------------+------------------------+------------+------------+
+| Orden | Estado    | vehiculo                     | Mecanico               | Apertura   | Total      |
++-------+-----------+------------------------------+------------------------+------------+------------+
+| #1    | CERRADA   | AB123CD - Toyota Corolla     | José Pérez (BAJA)      | 2026-11-19 |     139.50 |
+| #2    | CERRADA   | XY987ZW - Chevrolet Aveo     | José Pérez (BAJA)      | 2026-11-19 |     256.25 |
+| #3    | CERRADA   | LM456NP - Ford Fiesta        | Ana Villalobos         | 2026-11-19 |     108.50 |
+| #4    | CERRADA   | KJ321HG - Honda Civic        | Luis Fuenmayor (BAJA)  | 2026-11-19 |      26.00 |
+| #5    | CERRADA   | PQ654RS - Hyundai Accent     | Luis Fuenmayor (BAJA)  | 2026-11-19 |      25.00 |
+| #6    | CERRADA   | AB123CD - Toyota Corolla     | Ana Villalobos         | 2026-11-19 |      95.75 |
+| #9    | CERRADA   | WS963QA - Mazda 3            | José Pérez (BAJA)      | 2026-11-19 |     128.00 |
+| #11   | CERRADA   | LM456NP - Ford Fiesta        | Carlos Soto            | 2026-11-19 |      26.50 |
++-------+-----------+------------------------------+------------------------+------------+------------+
+Total de ordenes mostradas: 8
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 6
+numero de orden: 1
+[DEPURACION] Orden #1 leida en la posicion 16 bytes
+
++-------------------------------------------------------------------+
+|                       ORDEN DE SERVICIO #1                        |
++-------------------------------------------------------------------+
+| Estado   : CERRADA    Apertura: 2026-11-19                        |
+| Cierre   : 2026-11-19                                             |
+| Vehiculo : AB123CD - Toyota Corolla 2015 (42500 km)               |
+| Dueno    : María González                                         |
+| Mecanico : José Pérez (FRENOS) - DADO DE BAJA                     |
+| Km ingreso: 41000                                                 |
+| Falla    : Frenos chirriando al detenerse                         |
++----------+-------------------------+------+----------+------------+
+| Codigo   | Repuesto                | Cant | P.Unit   | Total      |
++----------+-------------------------+------+----------+------------+
+| FIL-001  | Filtro de aceite        |    1 |     8.50 |       8.50 |
+| ACE-004  | Aceite 10W40 (litro)    |    4 |     9.75 |      39.00 |
+| BUJ-003  | Bujia                   |    4 |     4.25 |      17.00 |
+| PAS-002  | Pastillas de freno dela |    1 |    35.00 |      35.00 |
++----------+-------------------------+------+----------+------------+
+| Repuestos                                            |      99.50 |
+| Mano de obra                                         |      40.00 |
+| TOTAL                                                |     139.50 |
++------------------------------------------------------+------------+
+Lineas de detalle: 4 (maximo por orden: 20)
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 4
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 1
+
+--- ABRIR ORDEN DE SERVICIO (escriba CANCELAR para abortar) ---
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        0 | BAJA     |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+Placa del vehiculo: KJ321HG
+ID del mecanico responsable (segun la lista): 1
+ERROR: El mecanico 'José Pérez' esta dado de baja.
+
++--------------------------------------------
+|            ORDENES DE SERVICIO            |
++-------------------------------------------+
+| 1. Abrir orden                            |
+| 2. Agregar repuesto a orden               |
+| 3. Quitar repuesto de orden               |
+| 4. Cerrar orden                           |
+| 5. Anular orden                           |
+| 6. Ver detalle de orden                   |
+| 7. Listar ordenes                         |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 2
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 3
+
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| ID   | Nombre                 | cedula         | Especialidad   | Ingreso     | Abiertas | Estado   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+| 1    | José Pérez             | V-11111111     | FRENOS         | 2020-03-15  |        0 | BAJA     |
+| 2    | Ana Villalobos         | V-22222222     | MOTOR          | 2021-06-01  |        0 | ACTIVO   |
+| 3    | Luis Fuenmayor         | V-33333333     | ELECTRICIDAD   | 2019-09-10  |        0 | BAJA     |
+| 4    | Carlos Soto            | V-44444444     | GENERAL        | 2022-01-20  |        1 | ACTIVO   |
++------+------------------------+----------------+----------------+-------------+----------+----------+
+Total de mecanicos mostrados: 4
+
++--------------------------------------------
+|           GESTION DE MECANICOS            |
++-------------------------------------------+
+| 1. Registrar mecanico                     |
+| 2. Buscar mecanico por ID                 |
+| 3. Listar mecanicos                       |
+| 4. Dar de baja mecanico                   |
+| 0. Volver al menu principal               |
++-------------------------------------------+
+Seleccione una opcion: 0
+
++--------------------------------------------
+|       SISTEMA DE GESTION DE TALLER        |
+|       Taller: Autoservicio El Lago        |
++-------------------------------------------+
+| 1. Gestion de Vehiculos                   |
+| 2. Gestion de Mecanicos                   |
+| 3. Inventario de Repuestos                |
+| 4. Ordenes de Servicio                    |
+| 5. Reportes                               |
+| 6. Mantenimiento                          |
+| 0. Salir                                  |
++-------------------------------------------+
+Seleccione una opcion: 0
+Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): S
+Hasta luego.
