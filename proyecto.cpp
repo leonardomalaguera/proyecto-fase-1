@@ -18,7 +18,7 @@
 #endif
 
 //constantes
-const int MAX_DETALLES = 20;        // lineas de detalle por orden 
+const int MAX_DETALLES = 20;        // lineas de detalle por orden snprintf
 const int MAX_RESULTADOS = 50;      // maximo de registros que entrega una busqueda o listado
 const int MAX_PROBLEMAS = 100;      // maximo de mensajes que guarda el reporte de integridad
 const int TOP_REPUESTOS = 10;       // tamano del ranking de repuestos mas usados
@@ -1443,7 +1443,7 @@ static bool leerFloat(const char* prompt, float* out, double minV, bool estricto
         char* fin = nullptr;
         double v = strtod(t.c_str(), &fin);
         if (t.empty() || *fin != '\0') {
-            cout << "ERROR: '" << t << "' no es un número valido.\n";
+            cout << "ERROR: '" << t << "' no es un numero valido.\n";
             continue;
         }
         if (estricto ? !(v > minV) : !(v >= minV)) {
@@ -1885,14 +1885,14 @@ void menuVehiculos() {
     cout << "\nMecanico: " << m.nombre << " (" << m.especialidad << ")" << (m.eliminado ? "  *** DADO DE BAJA ***" : "") << "\n";
     cout << "  Cedula        : " << m.cedula << "\n";
     cout << "  Ingreso       : " << m.fechaIngreso << " (ID " << m.id << ")\n";
-    cout << "  Órdenes abiertas: " << (abiertas < 0 ? 0 : abiertas) << "\n";
+    cout << "  ordenes abiertas: " << (abiertas < 0 ? 0 : abiertas) << "\n";
 }
 
 void mostrarListaMecanicos(const Mecanico* lista, int cantidad) {
     const int w[] = {6, 24, 16, 16, 13, 10, 10};
     cout << "\n";
     lineaTabla("+", "+", "+", w, 7);
-    cout << "|"; celda("ID", w[0]); cout << "|"; celda("Nombre", w[1]); cout << "|"; celda("Cédula", w[2]);
+    cout << "|"; celda("ID", w[0]); cout << "|"; celda("Nombre", w[1]); cout << "|"; celda("cedula", w[2]);
     cout << "|"; celda("Especialidad", w[3]); cout << "|"; celda("Ingreso", w[4]); cout << "|"; celda("Abiertas", w[5]);
     cout << "|"; celda("Estado", w[6]); cout << "|\n";
     lineaTabla("+", "+", "+", w, 7);
@@ -1907,7 +1907,7 @@ void mostrarListaMecanicos(const Mecanico* lista, int cantidad) {
         cout << "|"; celda(m.eliminado ? "BAJA" : "ACTIVO", w[6]); cout << "|\n";
     }
     lineaTabla("+", "+", "+", w, 7);
-    cout << "Total de mecánicos mostrados: " << cantidad << "\n";
+    cout << "Total de mecanicos mostrados: " << cantidad << "\n";
 }
 
 void menuRegistrarMecanico() {
@@ -2247,7 +2247,7 @@ void mostrarListaOrdenes(const OrdenServicio* lista, int cantidad) {
     const int w[] = {7, 11, 30, 24, 12, 12};
     cout << "\n";
     lineaTabla("+", "+", "+", w, 6);
-    cout << "|"; celda("Orden", w[0]); cout << "|"; celda("Estado", w[1]); cout << "|"; celda("Vehículo", w[2]);
+    cout << "|"; celda("Orden", w[0]); cout << "|"; celda("Estado", w[1]); cout << "|"; celda("vehiculo", w[2]);
     cout << "|"; celda("Mecanico", w[3]); cout << "|"; celda("Apertura", w[4]); cout << "|"; celda("Total", w[5]); cout << "|\n";
     lineaTabla("+", "+", "+", w, 6);
     for (int i = 0; i < cantidad; i++) {
@@ -2350,7 +2350,7 @@ void menuQuitarRepuestoOrden() {
 void menuCerrarOrden() {
     cout << "\n--- CERRAR ORDEN (escriba CANCELAR para abortar) ---\n";
     int idOrden;
-    if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
+    if (!leerEntero("numero de orden: ", &idOrden, 1, INT_MAX)) return;
     OrdenServicio o;
     Resultado res = obtenerOrdenPorID(idOrden, o);
     if (res != RES_OK) { mostrarError(res, idOrden, 0, 0, 0, 0, 0); return; }
@@ -2371,7 +2371,7 @@ void menuCerrarOrden() {
 void menuAnularOrden() {
     cout << "\n--- ANULAR ORDEN (escriba CANCELAR para abortar) ---\n";
     int idOrden;
-    if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
+    if (!leerEntero("numero de orden: ", &idOrden, 1, INT_MAX)) return;
     OrdenServicio o;
     Resultado res = obtenerOrdenPorID(idOrden, o);
     if (res != RES_OK) { mostrarError(res, idOrden, 0, 0, 0, 0, 0); return; }
@@ -2385,7 +2385,7 @@ void menuAnularOrden() {
 
 void menuVerDetalleOrden() {
     int idOrden;
-    if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
+    if (!leerEntero("numero de orden: ", &idOrden, 1, INT_MAX)) return;
     OrdenServicio o;
     long long pos = -1;
     Resultado res = obtenerOrdenPorID(idOrden, o, &pos);
@@ -2416,22 +2416,22 @@ void menuListarOrdenes() {
         res = listarOrdenesPorEstado(t.c_str(), lista, MAX_RESULTADOS, &n, &hayMas);
     } else {
         char placa[10];
-        if (!leerPlaca("Placa del vehículo: ", placa, sizeof placa)) return;
+        if (!leerPlaca("Placa del vehiculo: ", placa, sizeof placa)) return;
         Vehiculo v;
         res = obtenerVehiculoPorPlaca(placa, v);
-        if (res == RES_VEHICULO_NO_EXISTE) { cout << "ERROR: No existe un vehículo con la placa '" << placa << "'.\n"; return; }
+        if (res == RES_VEHICULO_NO_EXISTE) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
         if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
         res = listarOrdenesPorVehiculo(v.id, lista, MAX_RESULTADOS, &n, &hayMas);
     }
     if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
-    if (n == 0) cout << "No hay órdenes que mostrar.\n";
+    if (n == 0) cout << "No hay ordenes que mostrar.\n";
     else { mostrarListaOrdenes(lista, n); avisarSiHayMas(hayMas); }
 }
 
 void menuOrdenes() {
     const char* items[] = {"1. Abrir orden", "2. Agregar repuesto a orden", "3. Quitar repuesto de orden",
                            "4. Cerrar orden", "5. Anular orden", "6. Ver detalle de orden",
-                           "7. Listar órdenes", "0. Volver al menú principal"};
+                           "7. Listar ordenes", "0. Volver al menu principal"};
     while (!gEOF) {
         cout << "\n";
         caja("ORDENES DE SERVICIO", nullptr, items, 8);
@@ -2527,7 +2527,7 @@ void menuReporteFacturacion() {
     const int w[] = {26, 11, 11, 11};
     cout << "\n";
     lineaTabla("╔", "╦", "╗", w, 4);
-    cout << "║"; celda("Mecánico", w[0]); cout << "║"; celda("Órdenes", w[1]); cout << "║"; celda("M. obra", w[2]);
+    cout << "║"; celda("Mecánico", w[0]); cout << "║"; celda("ordenes", w[1]); cout << "║"; celda("M. obra", w[2]);
     cout << "║"; celda("Repuestos", w[3]); cout << "║\n";
     lineaTabla("╠", "╬", "╣", w, 4);
     for (int i = 0; i < n; i++) {
@@ -2593,10 +2593,10 @@ void menuVerificarIntegridad() {
     bordeDoble("╔", "╗");
     filaDoble("REPORTE DE INTEGRIDAD DEL SISTEMA", true);
     bordeDoble("╠", "╣");
-    snprintf(l, sizeof l, "Vehículos verificados : %d", r.vehiculos); filaDoble(l, false);
-    snprintf(l, sizeof l, "Mecánicos verificados : %d", r.mecanicos); filaDoble(l, false);
+    snprintf(l, sizeof l, "vehiculos verificados : %d", r.vehiculos); filaDoble(l, false);
+    snprintf(l, sizeof l, "mecanicos verificados : %d", r.mecanicos); filaDoble(l, false);
     snprintf(l, sizeof l, "Repuestos verificados : %d", r.repuestos); filaDoble(l, false);
-    snprintf(l, sizeof l, "Órdenes verificadas   : %d", r.ordenes); filaDoble(l, false);
+    snprintf(l, sizeof l, "ordenes verificadas   : %d", r.ordenes); filaDoble(l, false);
     filaDoble("", false);
     snprintf(l, sizeof l, "Problemas encontrados : %d", r.problemas); filaDoble(l, false);
     filaDoble(r.problemas == 0 ? "Estado: SISTEMA ÍNTEGRO" : "Estado: SISTEMA CON PROBLEMAS", false);
