@@ -2261,9 +2261,11 @@ void mostrarOrden(OrdenServicio* o, SistemaTaller* s) {
     const int INNER = W1 + W2 + W3 + W4 + W5 + 4;   // ancho interior de la caja
     const int LABEL = W1 + W2 + W3 + W4 + 3;        // ancho de las etiquetas de totales
     char linea[400], tmp[200];
-    Vehiculo* v = buscarVehiculoPorID(s, o->idVehiculo);
-    Mecanico* m = buscarMecanicoPorID(s, o->idMecanico);
-
+    Vehiculo v;
+    Mecanico m; 
+    bool hayV = cargarVehiculo(o.idVehiculo, v);
+    bool hayM = cargarMecanico(o.idMecanico, m);  
+  
     auto fila = [&](const char* txt) {
         cout << "| "; imprimirPad(txt, INNER - 2, false); cout << " |\n";
     };
@@ -2274,22 +2276,23 @@ void mostrarOrden(OrdenServicio* o, SistemaTaller* s) {
         int izq = (INNER - largoUtf8(tmp)) / 2;
         cout << "|" << string(izq, ' '); imprimirPad(tmp, INNER - izq, false); cout << "|\n";
     }
+   
     cout << "+"; rep("-", INNER); cout << "+\n";
-    snprintf(linea, sizeof linea, "Estado   : %-10s Apertura: %s", o->estado, o->fechaApertura);
+    snprintf(linea, sizeof linea, "Estado   : %-10s Apertura: %s", o.estado, o.fechaApertura);
     fila(linea);
-    snprintf(linea, sizeof linea, "Cierre   : %s", o->fechaCierre[0] ? o->fechaCierre : "-");
+    snprintf(linea, sizeof linea, "Cierre   : %s", o.fechaCierre[0] ? o.fechaCierre : "-");
     fila(linea);
-    if (v) snprintf(linea, sizeof linea, "Vehiculo : %s - %s %s %d (%d km)", v->placa, v->marca, v->modelo, v->anio, v->kilometraje);
+    if (hayV) snprintf(linea, sizeof linea, "Vehiculo : %s - %s %s %d (%d km)", v.placa, v.marca, v.modelo, v.anio, v.kilometraje);
     else snprintf(linea, sizeof linea, "Vehiculo : (no disponible)");
     fila(linea);
-    snprintf(linea, sizeof linea, "Dueno    : %s", v ? v->nombrePropietario : "-");
+    snprintf(linea, sizeof linea, "Dueno    : %s", hayV ? v.nombrePropietario : "-");
     fila(linea);
-    if (m) snprintf(linea, sizeof linea, "Mecanico : %s (%s)", m->nombre, m->especialidad);
+    if (hayM) snprintf(linea, sizeof linea, "Mecanico : %s (%s)%s", m.nombre, m.especialidad, m.eliminado ? " - DADO DE BAJA" : "");
     else snprintf(linea, sizeof linea, "Mecanico : (no disponible)");
     fila(linea);
-    snprintf(linea, sizeof linea, "Km ingreso: %d", o->kilometrajeIngreso);
+    snprintf(linea, sizeof linea, "Km ingreso: %d", o.kilometrajeIngreso);
     fila(linea);
-    snprintf(linea, sizeof linea, "Falla    : %s", o->descripcionFalla);
+    snprintf(linea, sizeof linea, "Falla    : %s", o.descripcionFalla);
     fila(linea);
 
     const int w[] = {W1, W2, W3, W4, W5};
@@ -2297,69 +2300,81 @@ void mostrarOrden(OrdenServicio* o, SistemaTaller* s) {
     cout << "|"; celda("Codigo", W1); cout << "|"; celda("Repuesto", W2); cout << "|"; celda("Cant", W3);
     cout << "|"; celda("P.Unit", W4); cout << "|"; celda("Total", W5); cout << "|\n";
     lineaTabla("+", "+", "+", w, 5);
-    for (int i = 0; i < o->numDetalles; i++) {
-        DetalleOrden* d = &o->detalles[i];
-        Repuesto* r = buscarRepuestoPorID(s, d->idRepuesto);
+    for (int i = 0; i < o.numDetalles && i < MAX_DETALLES; i++) {
+        const DetalleOrden& d = o.detalles[i];
+        Repuesto r;
+        bool hayR = cargarRepuesto(d.idRepuesto, r);
         char b3[16], b4[24], b5[24];
-        snprintf(b3, sizeof b3, "%d", d->cantidad);
-        fmtMoneda(b4, sizeof b4, d->precioUnitario);
-        fmtMoneda(b5, sizeof b5, d->cantidad * d->precioUnitario);
-        cout << "|"; celda(r ? r->codigo : "?", W1); cout << "|"; celda(r ? r->nombre : "?", W2);
+        snprintf(b3, sizeof b3, "%d", d.cantidad);
+        fmtMoneda(b4, sizeof b4, d.precioUnitario);
+        fmtMoneda(b5, sizeof b5, d.cantidad * d.precioUnitario);
+        cout << "|"; celda(hayR ? r.codigo : "?", W1); cout << "|"; celda(hayR ? r.nombre : "?", W2);
         cout << "|"; celda(b3, W3, true); cout << "|"; celda(b4, W4, true); cout << "|"; celda(b5, W5, true); cout << "|\n";
     }
     cout << "+"; rep("-", W1); cout << "+"; rep("-", W2); cout << "+"; rep("-", W3); cout << "+";
     rep("-", W4); cout << "+"; rep("-", W5); cout << "+\n";
     char val[24];
-    fmtMoneda(val, sizeof val, calcularSubtotalRepuestos(o));
+    fmtMoneda(val, sizeof val, calcularSubtotalRepuestos(&o));
     cout << "|"; celda("Repuestos", LABEL); cout << "|"; celda(val, W5, true); cout << "|\n";
-    fmtMoneda(val, sizeof val, o->manoObra);
+    fmtMoneda(val, sizeof val, o.manoObra);
     cout << "|"; celda("Mano de obra", LABEL); cout << "|"; celda(val, W5, true); cout << "|\n";
-    fmtMoneda(val, sizeof val, calcularTotalOrden(o));
+    fmtMoneda(val, sizeof val, calcularTotalOrden(&o));
     cout << "|"; celda("TOTAL", LABEL); cout << "|"; celda(val, W5, true); cout << "|\n";
     cout << "+"; rep("-", LABEL); cout << "+"; rep("-", W5); cout << "+\n";
-    cout << "Lineas de detalle: " << o->numDetalles << " (capacidad del arreglo de detalles: "
-         << o->capacidadDetalles << ")\n";
+    cout << "Lineas de detalle: " << o.numDetalles << " (maximo por orden: " << MAX_DETALLES << ")\n";
 }
 
-void mostrarListaOrdenes(OrdenServicio** lista, int cantidad, SistemaTaller* s) {
-    const int w[] = {7, 11, 30, 20, 12, 12};
+void mostrarListaOrdenes(const OrdenServicio* lista, int cantidad) {
+    const int w[] = {7, 11, 30, 24, 12, 12};
     cout << "\n";
     lineaTabla("+", "+", "+", w, 6);
     cout << "|"; celda("Orden", w[0]); cout << "|"; celda("Estado", w[1]); cout << "|"; celda("Vehículo", w[2]);
     cout << "|"; celda("Mecanico", w[3]); cout << "|"; celda("Apertura", w[4]); cout << "|"; celda("Total", w[5]); cout << "|\n";
     lineaTabla("+", "+", "+", w, 6);
     for (int i = 0; i < cantidad; i++) {
-        OrdenServicio* o = lista[i];
-        Vehiculo* v = buscarVehiculoPorID(s, o->idVehiculo);
-        Mecanico* m = buscarMecanicoPorID(s, o->idMecanico);
-        char b0[16], veh[160], tot[24];
-        snprintf(b0, sizeof b0, "#%d", o->id);
-        if (v) snprintf(veh, sizeof veh, "%s - %s %s", v->placa, v->marca, v->modelo);
+        const OrdenServicio& o = lista[i];
+        Vehiculo v;
+        Mecanico m;
+        bool hayV = cargarVehiculo(o.idVehiculo, v);
+        bool hayM = cargarMecanico(o.idMecanico, m);
+        char b0[16], veh[160], mec[130], tot[24];
+        snprintf(b0, sizeof b0, "#%d", o.id);
+        if (hayV) snprintf(veh, sizeof veh, "%s - %s %s", v.placa, v.marca, v.modelo);
         else snprintf(veh, sizeof veh, "-");
-        fmtMoneda(tot, sizeof tot, calcularTotalOrden(o));
-        cout << "|"; celda(b0, w[0]); cout << "|"; celda(o->estado, w[1]); cout << "|"; celda(veh, w[2]);
-        cout << "|"; celda(m ? m->nombre : "-", w[3]); cout << "|"; celda(o->fechaApertura, w[4]);
+        if (hayM) snprintf(mec, sizeof mec, "%s%s", m.nombre, m.eliminado ? " (BAJA)" : "");
+        else snprintf(mec, sizeof mec, "-");
+        fmtMoneda(tot, sizeof tot, calcularTotalOrden(&o));
+        cout << "|"; celda(b0, w[0]); cout << "|"; celda(o.estado, w[1]); cout << "|"; celda(veh, w[2]);
+        cout << "|"; celda(mec, w[3]); cout << "|"; celda(o.fechaApertura, w[4]);
         cout << "|"; celda(tot, w[5], true); cout << "|\n";
     }
     lineaTabla("+", "+", "+", w, 6);
-    cout << "Total de ordenes: " << cantidad << "\n";
+    cout << "Total de ordenes mostradas: " << cantidad << "\n";
 }
 
-void menuAbrirOrden(SistemaTaller* s) {
+void menuAbrirOrden() {
     cout << "\n--- ABRIR ORDEN DE SERVICIO (escriba CANCELAR para abortar) ---\n";
+    Mecanico lm[MAX_RESULTADOS];
     int nm;
-    Mecanico** lm = listarMecanicos(s, &nm);
-    if (nm == 0) { cout << "ERROR: No hay mecanicos registrados.\n"; delete[] lm; return; }
-    mostrarListaMecanicos(lm, nm, s);
-    delete[] lm;
+    bool hayMas;
+    Resultado res = listarMecanicos(lm, MAX_RESULTADOS, &nm, &hayMas);
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    if (nm == 0) { cout << "ERROR: No hay mecanicos registrados.\n"; return; }
+    mostrarListaMecanicos(lm, nm);
+    avisarSiHayMas(hayMas);
     char placa[10];
     if (!leerPlaca("Placa del vehiculo: ", placa, sizeof placa)) return;
-    Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
-    if (!v) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
+    Vehiculo v;
+    res = obtenerVehiculoPorPlaca(placa, v);
+    if (res == RES_VEHICULO_NO_EXISTE) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
     int idMec;
     if (!leerEntero("ID del mecanico responsable (segun la lista): ", &idMec, 1, INT_MAX)) return;
-    Mecanico* m = buscarMecanicoPorID(s, idMec);
-    if (!m) { cout << "ERROR: No existe un mecanico con ID " << idMec << ".\n"; return; }
+    Mecanico m;
+    res = obtenerMecanicoPorID(idMec, m);
+    if (res == RES_MECANICO_NO_EXISTE) { cout << "ERROR: No existe un mecanico con ID " << idMec << ".\n"; return; }
+    if (res == RES_MECANICO_DADO_BAJA) { mostrarError(res, 0, 0, idMec, 0, 0, 0); return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
     int km;
     if (!leerEntero("Kilometraje de ingreso: ", &km, 0, INT_MAX)) return;
     char falla[200];
@@ -2367,94 +2382,110 @@ void menuAbrirOrden(SistemaTaller* s) {
     bool ok;
     if (!leerSN("Confirmar la apertura de la orden (S/N): ", &ok)) return;
     if (!ok) { cout << "Apertura descartada.\n"; return; }
-    int idVeh = v->id, idM = m->id;
-    Resultado res;
-    OrdenServicio* o = abrirOrden(s, idVeh, idM, km, falla, &res);
-    if (o) cout << "Orden #" << o->id << " abierta para el vehiculo '" << placa << "' (mecanico: " << m->nombre << ").\n";
-    else mostrarError(res, s, 0, idVeh, idM, 0, 0, km);
+    int idNueva = 0;
+    res = abrirOrden(v.id, m.id, km, falla, &idNueva);
+    if (res == RES_OK) cout << "Orden #" << idNueva << " abierta para el vehiculo '" << placa << "' (mecanico: " << m.nombre << ").\n";
+    else mostrarError(res, 0, v.id, m.id, 0, 0, km);
 }
 
-void menuAgregarRepuestoOrden(SistemaTaller* s) {
+void menuAgregarRepuestoOrden() {
     cout << "\n--- AGREGAR REPUESTO A ORDEN (escriba CANCELAR para abortar) ---\n";
     int idOrden;
     if (!leerEntero("Numero de orden: ", &idOrden, 1, INT_MAX)) return;
     char cod[20];
     if (!leerCodigo("Codigo del repuesto: ", cod, sizeof cod)) return;
-    Repuesto* r = buscarRepuestoPorCodigo(s, cod);
-    if (!r) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorCodigo(cod, r);
+    if (res == RES_REPUESTO_NO_EXISTE) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
     int cant;
     if (!leerEntero("Cantidad (> 0): ", &cant, 1, INT_MAX)) return;
-    int idRep = r->id;
-    Resultado res = agregarRepuestoAOrden(s, idOrden, idRep, cant);
-    if (res == RES_OK) cout << "Se agregaron " << cant << " unidad(es) de '" << r->nombre << "' a la orden #" << idOrden
-                            << ". Stock restante: " << r->stock << ".\n";
-    else mostrarError(res, s, idOrden, 0, 0, idRep, cant, 0);
+    res = agregarRepuestoAOrden(idOrden, r.id, cant);
+    if (res == RES_OK) {
+        Repuesto despues;
+        obtenerRepuestoPorID(r.id, despues);
+        cout << "Se agregaron " << cant << " unidad(es) de '" << r.nombre << "' a la orden #" << idOrden
+             << ". Stock restante: " << despues.stock << ".\n";
+    } else mostrarError(res, idOrden, 0, 0, r.id, cant, 0);
 }
 
-void menuQuitarRepuestoOrden(SistemaTaller* s) {
+void menuQuitarRepuestoOrden() {
     cout << "\n--- QUITAR REPUESTO DE ORDEN (escriba CANCELAR para abortar) ---\n";
     int idOrden;
     if (!leerEntero("Numero de orden: ", &idOrden, 1, INT_MAX)) return;
     char cod[20];
     if (!leerCodigo("Codigo del repuesto: ", cod, sizeof cod)) return;
-    Repuesto* r = buscarRepuestoPorCodigo(s, cod);
-    if (!r) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
-    int idRep = r->id;
-    Resultado res = quitarRepuestoDeOrden(s, idOrden, idRep);
-    if (res == RES_OK) cout << "Se quito '" << r->nombre << "' de la orden #" << idOrden
-                            << ". Stock actual: " << r->stock << ".\n";
-    else mostrarError(res, s, idOrden, 0, 0, idRep, 0, 0);
+    Repuesto r;
+    Resultado res = obtenerRepuestoPorCodigo(cod, r);
+    if (res == RES_REPUESTO_NO_EXISTE) { cout << "ERROR: No existe un repuesto con el codigo '" << cod << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    res = quitarRepuestoDeOrden(idOrden, r.id);
+    if (res == RES_OK) {
+        Repuesto despues;
+        obtenerRepuestoPorID(r.id, despues);
+        cout << "Se quito '" << r.nombre << "' de la orden #" << idOrden << ". Stock: " << r.stock
+             << " -> " << despues.stock << ".\n";
+    } else mostrarError(res, idOrden, 0, 0, r.id, 0, 0);
 }
 
-void menuCerrarOrden(SistemaTaller* s) {
+void menuCerrarOrden() {
     cout << "\n--- CERRAR ORDEN (escriba CANCELAR para abortar) ---\n";
     int idOrden;
     if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
-    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
-    if (!o) { mostrarError(RES_ORDEN_NO_EXISTE, s, idOrden, 0, 0, 0, 0, 0); return; }
+    OrdenServicio o;
+    Resultado res = obtenerOrdenPorID(idOrden, o);
+    if (res != RES_OK) { mostrarError(res, idOrden, 0, 0, 0, 0, 0); return; }
     float mano;
     if (!leerFloat("Mano de obra (>= 0): ", &mano, 0, false)) return;
     bool ok;
     if (!leerSN("Confirmar el cierre de la orden? (S/N): ", &ok)) return;
     if (!ok) { cout << "Cierre descartado.\n"; return; }
-    Resultado res = cerrarOrden(s, idOrden, mano);
+    res = cerrarOrden(idOrden, mano);
     if (res == RES_OK) {
+        obtenerOrdenPorID(idOrden, o);                 // se relee: ahora esta CERRADA y con su mano de obra
         cout << fixed;
         cout.precision(2);
-        cout << "Orden #" << idOrden << " cerrada. Total: " << calcularTotalOrden(o) << ".\n";
-    } else mostrarError(res, s, idOrden, 0, 0, 0, 0, 0);
+        cout << "Orden #" << idOrden << " cerrada. Total: " << calcularTotalOrden(&o) << ".\n";
+    } else mostrarError(res, idOrden, 0, 0, 0, 0, 0);
 }
 
-void menuAnularOrden(SistemaTaller* s) {
+void menuAnularOrden() {
     cout << "\n--- ANULAR ORDEN (escriba CANCELAR para abortar) ---\n";
     int idOrden;
     if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
-    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
-    if (!o) { mostrarError(RES_ORDEN_NO_EXISTE, s, idOrden, 0, 0, 0, 0, 0); return; }
+    OrdenServicio o;
+    Resultado res = obtenerOrdenPorID(idOrden, o);
+    if (res != RES_OK) { mostrarError(res, idOrden, 0, 0, 0, 0, 0); return; }
     bool ok;
     if (!leerSN("Confirmar la anulación? Se devolverá el stock al inventario (S/N): ", &ok)) return;
     if (!ok) { cout << "Anulación descartada.\n"; return; }
-    Resultado res = anularOrden(s, idOrden);
+    res = anularOrden(idOrden);
     if (res == RES_OK) cout << "Orden #" << idOrden << " ANULADA. El inventario fue restituido.\n";
-    else mostrarError(res, s, idOrden, 0, 0, 0, 0, 0);
+    else mostrarError(res, idOrden, 0, 0, 0, 0, 0);
 }
 
-void menuVerDetalleOrden(SistemaTaller* s) {
+void menuVerDetalleOrden() {
     int idOrden;
     if (!leerEntero("Número de orden: ", &idOrden, 1, INT_MAX)) return;
-    OrdenServicio* o = buscarOrdenPorID(s, idOrden);
-    if (o) mostrarOrden(o, s);
-    else mostrarError(RES_ORDEN_NO_EXISTE, s, idOrden, 0, 0, 0, 0, 0);
+    OrdenServicio o;
+    long long pos = -1;
+    Resultado res = obtenerOrdenPorID(idOrden, o, &pos);
+    if (res == RES_OK) {
+        cout << "[DEPURACION] Orden #" << idOrden << " leida en la posicion " << pos << " bytes\n";
+        mostrarOrden(o);
+    } else mostrarError(res, idOrden, 0, 0, 0, 0, 0);
 }
 
-void menuListarOrdenes(SistemaTaller* s) {
+void menuListarOrdenes() {
     cout << "\nListar: 1. Todas   2. Por estado   3. Historial de un vehiculo\n";
     int modo;
     if (!leerEntero("Seleccione: ", &modo, 1, 3)) return;
     int n = 0;
-    OrdenServicio** lista = nullptr;
+    bool hayMas = false;
+    OrdenServicio lista[MAX_RESULTADOS];
+    Resultado res;
     if (modo == 1) {
-        lista = listarOrdenes(s, &n);
+        res = listarOrdenes(lista, MAX_RESULTADOS, &n, &hayMas);
     } else if (modo == 2) {
         string t;
         while (true) {
@@ -2463,20 +2494,22 @@ void menuListarOrdenes(SistemaTaller* s) {
             if (t == "ABIERTA" || t == "CERRADA" || t == "ANULADA") break;
             cout << "ERROR: Estado inválido.\n";
         }
-        lista = listarOrdenesPorEstado(s, t.c_str(), &n);
+        res = listarOrdenesPorEstado(t.c_str(), lista, MAX_RESULTADOS, &n, &hayMas);
     } else {
         char placa[10];
         if (!leerPlaca("Placa del vehículo: ", placa, sizeof placa)) return;
-        Vehiculo* v = buscarVehiculoPorPlaca(s, placa);
-        if (!v) { cout << "ERROR: No existe un vehículo con la placa '" << placa << "'.\n"; return; }
-        lista = listarOrdenesPorVehiculo(s, v->id, &n);
+        Vehiculo v;
+        res = obtenerVehiculoPorPlaca(placa, v);
+        if (res == RES_VEHICULO_NO_EXISTE) { cout << "ERROR: No existe un vehículo con la placa '" << placa << "'.\n"; return; }
+        if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+        res = listarOrdenesPorVehiculo(v.id, lista, MAX_RESULTADOS, &n, &hayMas);
     }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
     if (n == 0) cout << "No hay órdenes que mostrar.\n";
-    else mostrarListaOrdenes(lista, n, s);
-    delete[] lista;
+    else { mostrarListaOrdenes(lista, n); avisarSiHayMas(hayMas); }
 }
 
-void menuOrdenes(SistemaTaller* s) {
+void menuOrdenes() {
     const char* items[] = {"1. Abrir orden", "2. Agregar repuesto a orden", "3. Quitar repuesto de orden",
                            "4. Cerrar orden", "5. Anular orden", "6. Ver detalle de orden",
                            "7. Listar órdenes", "0. Volver al menú principal"};
@@ -2486,37 +2519,215 @@ void menuOrdenes(SistemaTaller* s) {
         int op;
         if (!leerOpcion(&op, 7)) continue;
         switch (op) {
-            case 1: menuAbrirOrden(s); break;
-            case 2: menuAgregarRepuestoOrden(s); break;
-            case 3: menuQuitarRepuestoOrden(s); break;
-            case 4: menuCerrarOrden(s); break;
-            case 5: menuAnularOrden(s); break;
-            case 6: menuVerDetalleOrden(s); break;
-            case 7: menuListarOrdenes(s); break;
+            case 1: menuAbrirOrden(); break;
+            case 2: menuAgregarRepuestoOrden(); break;
+            case 3: menuQuitarRepuestoOrden(); break;
+            case 4: menuCerrarOrden(); break;
+            case 5: menuAnularOrden(); break;
+            case 6: menuVerDetalleOrden(); break;
+            case 7: menuListarOrdenes(); break;
             case 0: return;
         }
     }
 }
 
-//menu principal
-void menuPrincipal(SistemaTaller* s) {
-    const char* items[] = {"1. Gestion de Vehiculos", "2. Gestion de Mecanicos", "3. Inventario de Repuestos",
-                           "4. Ordenes de Servicio", "0. Salir"};
-    char sub[150];
-    snprintf(sub, sizeof sub, "Taller: %s", s->taller.nombre);
+// ---------------- REPORTES ----------------
+void menuReporteHistorial() {
+    cout << "\n--- REPORTE 1: HISTORIAL DE VEHICULO (escriba CANCELAR para abortar) ---\n";
+    char placa[10];
+    if (!leerPlaca("Placa del vehiculo: ", placa, sizeof placa)) return;
+    Vehiculo v;
+    OrdenServicio ordenes[MAX_RESULTADOS];
+    int n;
+    bool hayMas;
+    float totalFacturado;
+    Resultado res = reporteHistorialVehiculo(placa, v, ordenes, MAX_RESULTADOS, &n, &hayMas, &totalFacturado);
+    if (res == RES_VEHICULO_NO_EXISTE) { cout << "ERROR: No existe un vehiculo con la placa '" << placa << "'.\n"; return; }
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    mostrarVehiculo(v);
+    if (n == 0) cout << "\nEl vehiculo no tiene ordenes registradas.\n";
+    else {
+        const int w[] = {7, 12, 24, 11, 12};
+        cout << "\n";
+        lineaTabla("+", "+", "+", w, 5);
+        cout << "|"; celda("Orden", w[0]); cout << "|"; celda("Fecha", w[1]); cout << "|"; celda("Mecanico", w[2]);
+        cout << "|"; celda("Estado", w[3]); cout << "|"; celda("Total", w[4]); cout << "|\n";
+        lineaTabla("+", "+", "+", w, 5);
+        for (int i = 0; i < n; i++) {
+            Mecanico m;
+            bool hayM = cargarMecanico(ordenes[i].idMecanico, m);
+            char b0[16], mec[130], tot[24];
+            snprintf(b0, sizeof b0, "#%d", ordenes[i].id);
+            if (hayM) snprintf(mec, sizeof mec, "%s%s", m.nombre, m.eliminado ? " (BAJA)" : "");
+            else snprintf(mec, sizeof mec, "-");
+            fmtMoneda(tot, sizeof tot, calcularTotalOrden(&ordenes[i]));
+            cout << "|"; celda(b0, w[0]); cout << "|"; celda(ordenes[i].fechaApertura, w[1]); cout << "|"; celda(mec, w[2]);
+            cout << "|"; celda(ordenes[i].estado, w[3]); cout << "|"; celda(tot, w[4], true); cout << "|\n";
+        }
+        lineaTabla("+", "+", "+", w, 5);
+        avisarSiHayMas(hayMas);
+    }
+    cout << fixed;
+    cout.precision(2);
+    cout << "Total facturado en ordenes CERRADAS: " << totalFacturado << "\n";
+}
+
+void menuReporteRepuestos() {
+    cout << "\n--- REPORTE 2: REPUESTOS MAS UTILIZADOS (ordenes CERRADAS) ---\n";
+    FilaUsoRepuesto filas[TOP_REPUESTOS];
+    int n;
+    Resultado res = reporteRepuestosMasUsados(filas, &n);
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    if (n == 0) { cout << "No hay repuestos consumidos en ordenes cerradas.\n"; return; }
+    const int w[] = {6, 11, 30, 10};
+    cout << "\n";
+    lineaTabla("╔", "╦", "╗", w, 4);
+    cout << "║"; celda("Pos", w[0]); cout << "║"; celda("Codigo", w[1]); cout << "║"; celda("Repuesto", w[2]);
+    cout << "║"; celda("Unidades", w[3]); cout << "║\n";
+    lineaTabla("╠", "╬", "╣", w, 4);
+    for (int i = 0; i < n; i++) {
+        Repuesto r;
+        bool hayR = cargarRepuesto(filas[i].idRepuesto, r);
+        char b0[16], b3[16];
+        snprintf(b0, sizeof b0, "%d", i + 1);
+        snprintf(b3, sizeof b3, "%d", filas[i].unidades);
+        cout << "║"; celda(b0, w[0], true); cout << "║"; celda(hayR ? r.codigo : "?", w[1]); cout << "║"; celda(hayR ? r.nombre : "?", w[2]);
+        cout << "║"; celda(b3, w[3], true); cout << "║\n";
+    }
+    lineaTabla("╚", "╩", "╝", w, 4);
+}
+
+void menuReporteFacturacion() {
+    cout << "\n--- REPORTE 3: FACTURACION POR MECANICO (ordenes CERRADAS) ---\n";
+    FilaFacturacion filas[MAX_RESULTADOS];
+    int n;
+    bool hayMas;
+    Resultado res = reporteFacturacionMecanicos(filas, MAX_RESULTADOS, &n, &hayMas);
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    if (n == 0) { cout << "No hay mecanicos registrados.\n"; return; }
+    const int w[] = {26, 11, 11, 11};
+    cout << "\n";
+    lineaTabla("╔", "╦", "╗", w, 4);
+    cout << "║"; celda("Mecánico", w[0]); cout << "║"; celda("Órdenes", w[1]); cout << "║"; celda("M. obra", w[2]);
+    cout << "║"; celda("Repuestos", w[3]); cout << "║\n";
+    lineaTabla("╠", "╬", "╣", w, 4);
+    for (int i = 0; i < n; i++) {
+        char nom[130], b1[16], b2[24], b3[24];
+        snprintf(nom, sizeof nom, "%s%s", filas[i].mecanico.nombre, filas[i].mecanico.eliminado ? " (BAJA)" : "");
+        snprintf(b1, sizeof b1, "%d", filas[i].ordenesCerradas);
+        fmtMoneda(b2, sizeof b2, filas[i].manoObra);
+        fmtMoneda(b3, sizeof b3, filas[i].repuestos);
+        cout << "║"; celda(nom, w[0]); cout << "║"; celda(b1, w[1], true); cout << "║"; celda(b2, w[2], true);
+        cout << "║"; celda(b3, w[3], true); cout << "║\n";
+    }
+    lineaTabla("╚", "╩", "╝", w, 4);
+    avisarSiHayMas(hayMas);
+}
+
+void menuReportes() {
+    const char* items[] = {"1. Historial de vehiculo", "2. Repuestos mas utilizados", "3. Facturacion por mecanico",
+                           "0. Volver al menu principal"};
     while (!gEOF) {
         cout << "\n";
-        caja("SISTEMA DE GESTION DE TALLER", sub, items, 5);
+        caja("REPORTES", nullptr, items, 4);
         int op;
-        if (!leerOpcion(&op, 4)) continue;
+        if (!leerOpcion(&op, 3)) continue;
         switch (op) {
-            case 1: menuVehiculos(s); break;
-            case 2: menuMecanicos(s); break;
-            case 3: menuInventario(s); break;
-            case 4: menuOrdenes(s); break;
+            case 1: menuReporteHistorial(); break;
+            case 2: menuReporteRepuestos(); break;
+            case 3: menuReporteFacturacion(); break;
+            case 0: return;
+        }
+    }
+}
+
+// ---------------- MANTENIMIENTO ----------------
+static void filaDoble(const char* txt, bool centrar) {
+    const int ancho = 55;
+    cout << "║";
+    if (centrar) {
+        int izq = (ancho - largoUtf8(txt)) / 2;
+        if (izq < 0) izq = 0;
+        cout << string(izq, ' ');
+        imprimirPad(txt, ancho - izq, false);
+    } else {
+        cout << ' ';
+        imprimirPad(txt, ancho - 1, false);
+    }
+    cout << "║\n";
+}
+
+static void bordeDoble(const char* izq, const char* der) {
+    cout << izq; rep("═", 55); cout << der << "\n";
+}
+
+void menuVerificarIntegridad() {
+    cout << "\n--- VERIFICACION DE INTEGRIDAD ---\n";
+    ReporteIntegridad r;
+    Resultado res = verificarIntegridad(r);
+    if (res != RES_OK) { mostrarError(res, 0, 0, 0, 0, 0, 0); return; }
+    for (int i = 0; i < r.mensajesGuardados; i++) cout << "ROTO: " << r.mensajes[i] << "\n";
+    if (r.problemas > r.mensajesGuardados)
+        cout << "... y " << (r.problemas - r.mensajesGuardados) << " problema(s) mas no listados.\n";
+    char l[100];
+    cout << "\n";
+    bordeDoble("╔", "╗");
+    filaDoble("REPORTE DE INTEGRIDAD DEL SISTEMA", true);
+    bordeDoble("╠", "╣");
+    snprintf(l, sizeof l, "Vehículos verificados : %d", r.vehiculos); filaDoble(l, false);
+    snprintf(l, sizeof l, "Mecánicos verificados : %d", r.mecanicos); filaDoble(l, false);
+    snprintf(l, sizeof l, "Repuestos verificados : %d", r.repuestos); filaDoble(l, false);
+    snprintf(l, sizeof l, "Órdenes verificadas   : %d", r.ordenes); filaDoble(l, false);
+    filaDoble("", false);
+    snprintf(l, sizeof l, "Problemas encontrados : %d", r.problemas); filaDoble(l, false);
+    filaDoble(r.problemas == 0 ? "Estado: SISTEMA ÍNTEGRO" : "Estado: SISTEMA CON PROBLEMAS", false);
+    bordeDoble("╚", "╝");
+}
+
+void menuCrearBackup() {
+    cout << "\n--- RESPALDO DE DATOS ---\n";
+    char ruta[100];
+    Resultado res = crearBackup(ruta, sizeof ruta);
+    if (res == RES_OK) cout << "Respaldo creado correctamente en la carpeta: " << ruta << "\n";
+    else mostrarError(res, 0, 0, 0, 0, 0, 0);
+}
+
+void menuMantenimiento() {
+    const char* items[] = {"1. Verificar integridad", "2. Crear respaldo (backup)", "0. Volver al menu principal"};
+    while (!gEOF) {
+        cout << "\n";
+        caja("MANTENIMIENTO", nullptr, items, 3);
+        int op;
+        if (!leerOpcion(&op, 2)) continue;
+        switch (op) {
+            case 1: menuVerificarIntegridad(); break;
+            case 2: menuCrearBackup(); break;
+            case 0: return;
+        }
+    }
+}
+
+// ---------------- MENU PRINCIPAL Y MAIN ----------------
+void menuPrincipal(const Taller& taller) {
+    const char* items[] = {"1. Gestion de Vehiculos", "2. Gestion de Mecanicos", "3. Inventario de Repuestos",
+                           "4. Ordenes de Servicio", "5. Reportes", "6. Mantenimiento", "0. Salir"};
+    char sub[150];
+    snprintf(sub, sizeof sub, "Taller: %s", taller.nombre);
+    while (!gEOF) {
+        cout << "\n";
+        caja("SISTEMA DE GESTION DE TALLER", sub, items, 7);
+        int op;
+        if (!leerOpcion(&op, 6)) continue;
+        switch (op) {
+            case 1: menuVehiculos(); break;
+            case 2: menuMecanicos(); break;
+            case 3: menuInventario(); break;
+            case 4: menuOrdenes(); break;
+            case 5: menuReportes(); break;
+            case 6: menuMantenimiento(); break;
             case 0: {
                 bool ok;
-                if (!leerSN("Seguro que desea salir? Los datos en memoria se perderan (S/N): ", &ok)) break;
+                if (!leerSN("Seguro que desea salir? (los datos ya estan guardados en disco) (S/N): ", &ok)) break;
                 if (ok) { cout << "Hasta luego.\n"; return; }
                 break;
             }
@@ -2524,18 +2735,34 @@ void menuPrincipal(SistemaTaller* s) {
     }
 }
 
-int main() {
-    Taller datos;
-    memset(&datos, 0, sizeof datos);
-    strcpy(datos.nombre, "Autoservicio El Lago");
-    strcpy(datos.rif, "J-12345678-9");
-    strcpy(datos.direccion, "Av. 5 de Julio, Maracaibo, Zulia");
-    strcpy(datos.telefono, "0261-7000000");
+// Primer arranque: pide los datos del taller y crea taller.bin
+static bool pedirDatosTaller(Taller& t) {
+    cout << "PRIMER ARRANQUE: no existe taller.bin. Ingrese los datos del taller.\n";
+    memset(&t, 0, sizeof t);
+    if (!leerTexto("Nombre del taller: ", t.nombre, sizeof t.nombre)) return false;
+    if (!leerTexto("RIF: ", t.rif, sizeof t.rif)) return false;
+    if (!leerTexto("Direccion: ", t.direccion, sizeof t.direccion)) return false;
+    if (!leerTexto("Telefono: ", t.telefono, sizeof t.telefono)) return false;
+    return guardarTaller(t);
+}
 
-    SistemaTaller sistema;
-    inicializarSistema(&sistema, datos);
-    menuPrincipal(&sistema);
-    liberarSistema(&sistema);
+int main() {
+    if (!inicializarArchivosSistema()) {
+        cout << "ERROR: No se pudo preparar el archivo '" << ultimoArchivoConError() << "'. El programa no puede continuar.\n";
+        return 1;
+    }
+    Taller taller;
+    memset(&taller, 0, sizeof taller);
+    if (!existeArchivoTaller()) {
+        if (!pedirDatosTaller(taller)) {
+            cout << "No se pudo crear taller.bin (" << ultimoArchivoConError() << "). El programa no puede continuar.\n";
+            return 1;
+        }
+    } else if (!leerTaller(taller)) {
+        cout << "ERROR: No se pudo leer el archivo '" << ultimoArchivoConError() << "'. El programa no puede continuar.\n";
+        return 1;
+    }
+    menuPrincipal(taller);
     return 0;
 }
 
